@@ -1,0 +1,3 @@
+# Make sure that files that look like text files are normalized to LF on
+# commit
+*       -text
