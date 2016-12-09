@@ -171,6 +171,9 @@
     <Content Include="avrdude.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="libusb0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="bits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
