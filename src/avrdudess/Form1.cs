@@ -568,6 +568,8 @@ namespace avrdudess
             about += AssemblyData.title + Environment.NewLine;
             about += "Version " + AssemblyData.version.ToString() + Environment.NewLine;
             about += AssemblyData.copyright + Environment.NewLine;
+            about += "Based on Avrdudess by Zak Kemble. Licensed under the GPLv3." + Environment.NewLine;
+            about += "Source at github.com/3devo/3devoUpdate";
             about += Environment.NewLine;
             about += "www.3devo.com";
             MessageBox.Show(about, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);

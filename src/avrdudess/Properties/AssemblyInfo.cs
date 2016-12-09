@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("3devoUpdate")]
-[assembly: AssemblyDescription("Softwrae pdate program for 3devo filament extruder")]
+[assembly: AssemblyDescription("Software update program for 3devo filament extruder")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("3devo")]
 [assembly: AssemblyProduct("3devoUpdate")]
-[assembly: AssemblyCopyright("Copyright © 2016 3devo")]
+[assembly: AssemblyCopyright("© 2013 by Zak Kemble, © 2016 3devo.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
