@@ -158,6 +158,9 @@ namespace avrdudess
 
         private void p_Exited(object sender, EventArgs e)
         {
+            if (upload_status == 0)
+                Util.consoleWrite("Uploading file failed!");
+
             if (OnProcessEnd != null)
                 OnProcessEnd(this, EventArgs.Empty);
 
@@ -264,7 +267,7 @@ namespace avrdudess
                             {
                                 Util.consoleWrite("\n");
                                 Util.consoleWrite("Uploading file was succesful!");
-                                upload_status = 0;
+                                upload_status = 3;
 
                                 // Debug info
                                 if (Constants.DEBUG_STATUS == true)
