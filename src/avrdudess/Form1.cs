@@ -32,7 +32,6 @@ namespace avrdudess
         private const string READY_FOR_UPLOADING = "Ready for uploading!\n";
         private ToolTip ToolTips;
         private Avrdude avrdude;
-        private Avrsize avrsize;
         private Presets presets;
         private CmdLine cmdLine;
         private bool drag               = false;
@@ -110,7 +109,6 @@ namespace avrdudess
 
             cmdLine = new CmdLine(this);
             avrdude = new Avrdude();
-            avrsize = new Avrsize();
 
             avrdude.OnProcessStart += avrdude_OnProcessStart;
             avrdude.OnProcessEnd += avrdude_OnProcessEnd;
@@ -118,7 +116,6 @@ namespace avrdudess
             avrdude.OnDetectedMCU += avrdude_OnDetectedMCU;
 
             avrdude.load();
-            avrsize.load();
 
             // Setup memory files/usage bars
             enableClientAreaDrag(Controls);
