@@ -266,7 +266,7 @@ namespace avrdudess
                                     )
                             {
                                 Util.consoleWrite("\n");
-                                Util.consoleWrite("Uploading file was succesful!");
+                                Util.consoleWrite("Uploading file was successful!");
                                 upload_status = 3;
 
                                 // Debug info
