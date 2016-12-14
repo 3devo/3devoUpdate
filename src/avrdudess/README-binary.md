@@ -2,7 +2,7 @@
 ============================================
 This tool can be used to update the firmware of a 3Devo Next 1.0
 Filament Extruder using a Windows computer. For updating using a Linux
-or OSX computer, see the instructions below.
+or OSX computer, see the instructions further down.
 
 To use this tool, extract all files from the zipfile to a convenient
 location. You should have the following files:
@@ -13,27 +13,29 @@ location. You should have the following files:
  - libusb0.dll
  - README.txt
 
-Updating the firmware requires two steps: Installing the serial driver,
-and uploading the firmware. The actual firmware is a .hex file that
-separately supplied.
 
-Driver install
---------------
-To install the driver, right click the '3devo serial driver' and click
-'Install'. No confirmation is shown, but if the driver is succesfully
+Updating the firmware requires two steps:
+
+Step 1: Driver install
+----------------------
+To install the driver:
+ - If you use Windows 10, enable test mode, or disable driver signature
+   enforcement as explained at:
+   http://www.howtogeek.com/167723/how-to-disable-driver-signature-verification-on-64-bit-windows-8.1-so-that-you-can-install-unsigned-drivers/
+ - right click the '3devo serial driver' file
+ - click 'Install'
+
+No confirmation is shown, but if the driver is succesfully
 installed, a popup should appear in the lower right saying "Next 1.0
 filament extruder (COM..) installed" when the filament extruder is next
 plugged into USB.
 
-Note that this driver is nog signed, so on Windows 8 and/or 10, you
-might need to disable driver signature verification for installation to
-work.
-
 Installing the driver only needs to happen once, so you can skip this
 step when later updating to another firmware version.
 
-Firmware upload
----------------
+
+Step 2: Firmware upload
+-----------------------
 Start the updating tool doubleclicking the '3devoUpdate.exe' (or just
 '3devoUpdate') executable file.
 
@@ -45,11 +47,25 @@ To start the upload:
    be separately supplied.
  - Click upload
 
+
+
+After this, the software update is complete. The rest of this file contains
+instructions for Linux and OSX only.
+
+
+
+
+
+
+
+
+
 Using Linux or OSX
 ==================
 For Linux and OSX, no graphical tool is available, but the firmware
 upload can be done using a terminal. Note that these instructions were
 not tested on OSX.
+
 
 Serial port
 -----------
@@ -61,6 +77,7 @@ To find out the name of the serial port, look for a device file named
 like `/dev/ttyACM0` (Linux) or `/dev/cu.usbserial123` (OSX). Running the
 `dmesg` command shortly after plugging in the USB cable can also help to
 find the device name.
+
 
 Getting avrdude
 ---------------
@@ -76,6 +93,8 @@ also need to add the `-C` option to the below command to point to the
 `avrdude.conf` file. To find these, start the Arduino IDE, enable
 verbose upload in the preferences and click "upload" to see both the
 path to `avrdude` as well as the `-C` option to use.
+
+
 
 Running avrdude
 ---------------
