@@ -24,7 +24,7 @@ namespace avrdudess
         public bool ready = false;
 
         private const string WEB_ADDR_FUSE_SETTINGS = "http://www.engbedded.com/fusecalc";
-        private const string PORT_DESCRIPTION_FE01 = "Next 1.0 filament extruder";
+        private const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
         private const string PORT_NOT_SELECTED = "No COM port selected...\n";
         private const string HEX_FILE_NOT_SELECTED = "No hex file selected...\n";
         private const string NO_EXTRUDER_CONNECTED = "No filament extruder connected.." 
@@ -293,19 +293,50 @@ namespace avrdudess
 
             foreach (ManagementObject queryObj in searcher.Get())
             {
-                if (queryObj["Description"].ToString().Equals(PORT_DESCRIPTION_FE01))
+                string pnpDeviceId = (string)queryObj["PNPDeviceID"];
+                //Console.WriteLine("Description  : {0}", queryObj["Description"]);
+                //Console.WriteLine(" PNPDeviceID : {0}", pnpDeviceId);
+
+                if (string.IsNullOrEmpty(pnpDeviceId))
+                  continue;
+
+                string txt = "SELECT * FROM win32_PNPEntity where DeviceID='" + pnpDeviceId.Replace("\\", "\\\\") + "'";
+                ManagementObjectSearcher deviceSearch = new ManagementObjectSearcher("root\\CIMV2", txt);
+                foreach (ManagementObject device in deviceSearch.Get())
                 {
-                    if (this.cmbPort.InvokeRequired)
-                    {
-                        BeginInvoke(new Action(() => this.cmbPort.Items.Add(queryObj["DeviceID"].ToString())));                        
+                  string[] hardwareIds = (string[])device["HardWareID"];
+                  if ((hardwareIds != null) && (hardwareIds.Length > 0))
+                  {
+                        for (UInt16 i = 0; i < hardwareIds.Length; i++)
+                        {
+                            if (hardwareIds[i].Equals(PORT_HARDWARE_ID_FE))
+                            {
+                               if (this.cmbPort.InvokeRequired)
+                               {
+                                    BeginInvoke(new Action(() => this.cmbPort.Items.Add(queryObj["DeviceID"].ToString())));
+                               }
+                               else
+                               {
+                                    this.cmbPort.Items.Add(queryObj["DeviceID"].ToString());
+                               }
+                               break;
+                            }
+                        }
                     }
-                    else
-                    {
-                        this.cmbPort.Items.Add(queryObj["DeviceID"].ToString());
-                    }
+                }                
+            }
+
+            if (this.cmbPort.Items.Count > 0)
+            {                
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(() => this.cmbPort.SelectedIndex = 0));
+                }
+                else
+                {
+                    this.cmbPort.SelectedIndex = 0;
                 }
             }
-            //System.Diagnostics.Debug.Write( "update_com_ports(): " + this.cmbPort.Items.Count + "\n");
 
             // update status info text
             if (InvokeRequired)
