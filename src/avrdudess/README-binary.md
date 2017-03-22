@@ -6,7 +6,8 @@ or OSX computer, see the instructions further down.
 
 To use this tool, extract all files from the zipfile to a convenient
 location. You should have the following files:
- - 3devo serial driver.inf
+ - 3devo-driver.inf
+ - 3devo-signature.cat
  - 3devoUpdate.exe
  - avrdude.exe
  - avrdude.conf
@@ -16,13 +17,13 @@ location. You should have the following files:
 
 Updating the firmware requires two steps:
 
-Step 1: Driver install
-----------------------
+Step 1: Driver install (Windows 8 and below only)
+---------------------------------------------------
+Starting from Windows 10, this driver is automatically installed and
+this step can be skipped.
+
 To install the driver:
- - If you use Windows 10, enable test mode, or disable driver signature
-   enforcement as explained at:
-   http://www.howtogeek.com/167723/how-to-disable-driver-signature-verification-on-64-bit-windows-8.1-so-that-you-can-install-unsigned-drivers/
- - right click the '3devo serial driver' file
+ - right click the '3devo-driver.inf' file
  - click 'Install'
 
 No confirmation is shown, but if the driver is succesfully

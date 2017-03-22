@@ -7,5 +7,5 @@ Filament Extruder.
 This tool is essentially a stripped down version of the
 [avrdudess](https://github.com/zkemble/AVRDUDESS/) program.
 
-See src/avrdudess/README.txt for information on the license of this
+See src/avrdudess/README-binary.md for information on the license of this
 and included software.
