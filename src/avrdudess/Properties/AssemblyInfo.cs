@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("3devoUpdate")]
 [assembly: AssemblyDescription("Software update program for 3devo filament extruder")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("3devo")]
+[assembly: AssemblyCompany("3devo B.V.")]
 [assembly: AssemblyProduct("3devoUpdate")]
 [assembly: AssemblyCopyright("© 2013 by Zak Kemble, © 2016 3devo.com")]
 [assembly: AssemblyTrademark("")]
