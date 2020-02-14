@@ -209,14 +209,14 @@ namespace avrdudess
                                 Util.consoleWrite("Connection problem...\n");
                                 Util.consoleWrite("\n");
                                 Util.consoleWrite("Possible problems:\n");
+                                Util.consoleWrite("  - Usb cable is disconnected.\n");
                                 Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
                                 Util.consoleWrite("  - Not properly working usb cable.\n");
-                                Util.consoleWrite("  - Usb cable is diconnected.\n");
                                 Util.consoleWrite("\n");
                                 Util.consoleWrite("Before contacting service:\n");
                                 Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
-                                Util.consoleWrite("  - Try to upload agian.\n");
-                                Util.consoleWrite("  - If this keeps on failing, contact service for more support.\n");
+                                Util.consoleWrite("  - Try to upload again.\n");
+                                Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
                                 Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
                                 upload_status = 0;
                             }
