@@ -167,7 +167,7 @@ namespace avrdudess
             string avrdudeVersion = (avrdude != null) ? avrdude.version : "";
             if (avrdudeVersion == "")
                 avrdudeVersion = "?";
-            Text = String.Format("{0} {1}.{2} ({3})", AssemblyData.title, AssemblyData.version.Major, AssemblyData.version.Minor, avrdudeVersion);
+            Text = String.Format("{0} v{1}.{2}", AssemblyData.title, AssemblyData.version.Major, AssemblyData.version.Minor);
         }
                
         // Click and drag (almost) anywhere to move window
