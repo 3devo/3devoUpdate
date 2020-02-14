@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "avrdudess", "avrdudess\avrdudess.csproj", "{B2875273-CDB9-4CCB-B93B-AF653CDB7D16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3devoUpdate", "3devoUpdate\3devoUpdate.csproj", "{B2875273-CDB9-4CCB-B93B-AF653CDB7D16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +19,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2B52717-ED33-47BB-8855-9539E242B416}
 	EndGlobalSection
 EndGlobal
