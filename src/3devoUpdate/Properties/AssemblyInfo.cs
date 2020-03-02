@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("3devoUpdate")]
-[assembly: AssemblyDescription("3devo fimrware update tool")]
+[assembly: AssemblyDescription("3devo firmware update tool")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("3devo B.V.")]
 [assembly: AssemblyProduct("3devoUpdate")]
