@@ -1,6 +1,6 @@
 ﻿/*
- * Project: 3devoUpdate - uploader for filament extuder
- * Author: [Zak Kemble, contact@zakkemble.co.uk], [Roland van Eeden, 3devo.com]
+ * Project: 3devoUpdate - firmware uploader for 3devo devices
+ * Author: [Zak Kemble, contact@zakkemble.co.uk], [R&D, 3devo.com]
  * Copyright: (C) 2013 by Zak Kemble, (C) 2016 by 3devo
  * License: GNU GPL v3 (see License.txt)
  * Web: https://blog.zakkemble.net/avrdudess-a-gui-for-avrdude/
