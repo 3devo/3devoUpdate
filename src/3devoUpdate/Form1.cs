@@ -142,9 +142,9 @@ namespace avrdudess
             ToolTips.Active = Config.Prop.toolTips;
 
             // Load saved presets
-            // EDITED: load 3Devo presets and set cmd line for avrdude
+            // EDITED: load 3devo presets and set cmd line for avrdude
             presets = new Presets(this);
-            presets.load_3Devo();
+            presets.load_3devo();
             ready = false;
             btnUpload.Enabled = false;
 

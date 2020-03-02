@@ -19,7 +19,7 @@ namespace avrdudess
     {
         private const string FILE_PRESETS = "presets.xml";
 
-        /* 3Devo default settings */
+        /* 3devo default settings */
         private const string PROGRAMMER = "arduino";
         private const string MCU = "m2560";
         private const string PORT = "";
@@ -121,10 +121,10 @@ namespace avrdudess
             }            
         }
 
-        //Load 3Devo Default settings
-        public void load_3Devo()
+        //Load 3devo Default settings
+        public void load_3devo()
         {
-            /* 3DevoDefault */
+            /* 3devo Default */
             mainForm.prog = new Programmer(PROGRAMMER);
             mainForm.mcu = new MCU(MCU);
             mainForm.port = PORT;
