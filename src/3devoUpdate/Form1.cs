@@ -3,7 +3,7 @@
  * Author: [Zak Kemble, contact@zakkemble.co.uk], [Roland van Eeden, 3devo.com]
  * Copyright: (C) 2013 by Zak Kemble, (C) 2016 by 3devo
  * License: GNU GPL v3 (see License.txt)
- * Web: http://blog.zakkemble.co.uk/avrdudess-a-gui-for-avrdude/
+ * Web: https://blog.zakkemble.net/avrdudess-a-gui-for-avrdude/
  */
 
 using System;
@@ -373,7 +373,7 @@ namespace avrdudess {
           "lp" // Parallel port
         };
 
-        // http://stackoverflow.com/questions/434494/serial-port-rs232-in-mono-for-multiple-platforms
+        // https://stackoverflow.com/questions/434494/serial-port-rs232-in-mono-for-multiple-platforms
         string[] devs;
         try {
           devs = Directory.GetFiles("/dev/", "*", SearchOption.TopDirectoryOnly);
@@ -475,7 +475,7 @@ namespace avrdudess {
 
     private void pictureBox1_Click( object sender, EventArgs e ) {
       // website: 3devo.com
-      System.Diagnostics.Process.Start("http://www.3devo.com/contact/");
+      System.Diagnostics.Process.Start("https://www.3devo.com/contact/");
     }
 
     private void btnAbout_Click( object sender, EventArgs e ) {
