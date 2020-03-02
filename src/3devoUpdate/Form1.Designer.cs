@@ -50,10 +50,10 @@
             // 
             // btnUpload
             // 
-            this.btnUpload.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUpload.Location = new System.Drawing.Point(14, 164);
+            this.btnUpload.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUpload.Location = new System.Drawing.Point(12, 135);
             this.btnUpload.Name = "btnUpload";
-            this.btnUpload.Size = new System.Drawing.Size(176, 23);
+            this.btnUpload.Size = new System.Drawing.Size(176, 27);
             this.btnUpload.TabIndex = 36;
             this.btnUpload.Text = "Upload";
             this.btnUpload.UseVisualStyleBackColor = true;
@@ -62,28 +62,32 @@
             // groupBox
             // 
             this.groupBox.Controls.Add(this.cmbPort);
-            this.groupBox.Location = new System.Drawing.Point(14, 21);
+            this.groupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox.Location = new System.Drawing.Point(12, 12);
             this.groupBox.Name = "groupBox";
-            this.groupBox.Size = new System.Drawing.Size(296, 59);
+            this.groupBox.Size = new System.Drawing.Size(296, 50);
             this.groupBox.TabIndex = 2;
             this.groupBox.TabStop = false;
-            this.groupBox.Text = "Select COM port (connected with the filament extuder)";
+            this.groupBox.Text = "Select Usb COM-Port:";
             // 
             // cmbPort
             // 
             this.cmbPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPort.FormattingEnabled = true;
             this.cmbPort.Location = new System.Drawing.Point(6, 19);
             this.cmbPort.Name = "cmbPort";
-            this.cmbPort.Size = new System.Drawing.Size(278, 21);
+            this.cmbPort.Size = new System.Drawing.Size(278, 24);
             this.cmbPort.TabIndex = 3;
             this.cmbPort.SelectedIndexChanged += new System.EventHandler(this.cmbPort_SelectedIndexChanged);
             // 
             // txtStatusInfo
             // 
             this.txtStatusInfo.AcceptsReturn = true;
+            this.txtStatusInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtStatusInfo.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStatusInfo.Location = new System.Drawing.Point(14, 221);
+            this.txtStatusInfo.Location = new System.Drawing.Point(12, 197);
             this.txtStatusInfo.Multiline = true;
             this.txtStatusInfo.Name = "txtStatusInfo";
             this.txtStatusInfo.ReadOnly = true;
@@ -95,27 +99,32 @@
             // 
             this.gbFlashFile.Controls.Add(this.txtFlashFile);
             this.gbFlashFile.Controls.Add(this.btnFlashBrowse);
-            this.gbFlashFile.Location = new System.Drawing.Point(14, 93);
+            this.gbFlashFile.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbFlashFile.Location = new System.Drawing.Point(12, 77);
             this.gbFlashFile.Name = "gbFlashFile";
-            this.gbFlashFile.Size = new System.Drawing.Size(412, 52);
+            this.gbFlashFile.Size = new System.Drawing.Size(474, 50);
             this.gbFlashFile.TabIndex = 4;
             this.gbFlashFile.TabStop = false;
-            this.gbFlashFile.Text = "Select .hex file";
+            this.gbFlashFile.Text = "Select Firmware:";
             // 
             // txtFlashFile
             // 
-            this.txtFlashFile.Location = new System.Drawing.Point(6, 20);
+            this.txtFlashFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFlashFile.Location = new System.Drawing.Point(6, 18);
             this.txtFlashFile.Name = "txtFlashFile";
             this.txtFlashFile.ReadOnly = true;
-            this.txtFlashFile.Size = new System.Drawing.Size(362, 20);
+            this.txtFlashFile.Size = new System.Drawing.Size(418, 22);
             this.txtFlashFile.TabIndex = 6;
             this.txtFlashFile.TextChanged += new System.EventHandler(this.FlashFile_Changed);
             // 
             // btnFlashBrowse
             // 
-            this.btnFlashBrowse.Location = new System.Drawing.Point(374, 20);
+            this.btnFlashBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFlashBrowse.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFlashBrowse.Location = new System.Drawing.Point(430, 16);
             this.btnFlashBrowse.Name = "btnFlashBrowse";
-            this.btnFlashBrowse.Size = new System.Drawing.Size(25, 20);
+            this.btnFlashBrowse.Size = new System.Drawing.Size(38, 24);
             this.btnFlashBrowse.TabIndex = 7;
             this.btnFlashBrowse.Text = "...";
             this.btnFlashBrowse.UseVisualStyleBackColor = true;
@@ -123,9 +132,10 @@
             // 
             // statusBar1
             // 
+            this.statusBar1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusBar1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssStatus});
-            this.statusBar1.Location = new System.Drawing.Point(0, 427);
+            this.statusBar1.Location = new System.Drawing.Point(0, 401);
             this.statusBar1.Name = "statusBar1";
             this.statusBar1.Size = new System.Drawing.Size(642, 22);
             this.statusBar1.TabIndex = 37;
@@ -133,15 +143,16 @@
             // tssStatus
             // 
             this.tssStatus.Name = "tssStatus";
-            this.tssStatus.Size = new System.Drawing.Size(39, 17);
+            this.tssStatus.Size = new System.Drawing.Size(42, 17);
             this.tssStatus.Text = "Ready";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 205);
+            this.label1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(9, 181);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 13);
+            this.label1.Size = new System.Drawing.Size(73, 13);
             this.label1.TabIndex = 52;
             this.label1.Text = "Status info";
             // 
@@ -149,9 +160,9 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(451, 21);
+            this.pictureBox1.Location = new System.Drawing.Point(492, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(170, 87);
+            this.pictureBox1.Size = new System.Drawing.Size(138, 59);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 53;
             this.pictureBox1.TabStop = false;
@@ -159,7 +170,8 @@
             // 
             // btnAbout
             // 
-            this.btnAbout.Location = new System.Drawing.Point(551, 118);
+            this.btnAbout.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAbout.Location = new System.Drawing.Point(416, 12);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(70, 27);
             this.btnAbout.TabIndex = 54;
@@ -171,7 +183,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(642, 449);
+            this.ClientSize = new System.Drawing.Size(642, 423);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
