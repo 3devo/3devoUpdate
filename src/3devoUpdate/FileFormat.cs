@@ -8,14 +8,11 @@
 
 using System;
 
-namespace avrdudess
-{
-    class FileFormat : Part
-    {
-        public FileFormat(string name, string fullName)
-            : base(name, fullName)
-        {
+namespace avrdudess {
+  class FileFormat : Part {
+    public FileFormat( string name, string fullName )
+        : base(name, fullName) {
 
-        }
     }
+  }
 }

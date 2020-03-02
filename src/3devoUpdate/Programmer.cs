@@ -8,14 +8,11 @@
 
 using System;
 
-namespace avrdudess
-{
-    public class Programmer : Part
-    {
-        public Programmer(string name, string fullName = "")
-            : base(name, fullName)
-        {
+namespace avrdudess {
+  public class Programmer : Part {
+    public Programmer( string name, string fullName = "" )
+        : base(name, fullName) {
 
-        }
     }
+  }
 }

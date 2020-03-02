@@ -11,148 +11,128 @@ using System.Collections;
 using System.IO;
 using System.Xml;
 
-namespace avrdudess
-{
-    // Credits:
-    // Simone Chifari (Fuse selector)
-    
-    sealed class FusesList : XmlFile<object>
-    {
-        
-        private const string FILE_BITS = "bits.xml";
+namespace avrdudess {
+  // Credits:
+  // Simone Chifari (Fuse selector)
 
-        public static readonly FusesList fl = new FusesList();
-        private Hashtable lockbits = new Hashtable();
-        private Hashtable fusebitslo = new Hashtable();
-        private Hashtable fusebitshi = new Hashtable();
-        private Hashtable fusebitsext = new Hashtable();
+  sealed class FusesList : XmlFile<object> {
 
-        protected override object data
-        {
-            get { return null; }
-            set { }
-        }
+    private const string FILE_BITS = "bits.xml";
 
-        private FusesList()
-            : base(FILE_BITS, "fuses")
-        {
-            load();
-        }
+    public static readonly FusesList fl = new FusesList();
+    private Hashtable lockbits = new Hashtable();
+    private Hashtable fusebitslo = new Hashtable();
+    private Hashtable fusebitshi = new Hashtable();
+    private Hashtable fusebitsext = new Hashtable();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        private void load()
-        {
-            string signature = null;
-            string high = null;
-            string low = null;
-            string ext = null;
-            string lb = null;
-            TextReader tr = null;
-
-            try
-            {
-                tr = new StreamReader(fileLocation);
-
-                using (XmlReader reader = XmlReader.Create(tr))
-                {
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Element)
-                        {
-                            string name = reader.Name;
-
-                            if (name == "mcu")
-                                signature = reader.GetAttribute("signature");
-
-                            reader.Read();
-                            switch (name)
-                            {
-                                case "high":
-                                    high = reader.ReadContentAsString();
-                                    break;
-                                case "low":
-                                    low = reader.ReadContentAsString();
-                                    break;
-                                case "ext":
-                                    ext = reader.ReadContentAsString();
-                                    break;
-                                case "lock":
-                                    lb = reader.ReadContentAsString();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        else if (reader.NodeType == XmlNodeType.EndElement)
-                        {
-                            if (reader.Name == "mcu" && signature != null)
-                            {
-                                if (lb != null)
-                                    lockbits.Add(signature, lb);
-                                if (low != null)
-                                    fusebitslo.Add(signature, low);
-                                if (high != null)
-                                    fusebitshi.Add(signature, high);
-                                if (ext != null)
-                                    fusebitsext.Add(signature, ext);
-
-                                signature = null;
-                                high = null;
-                                low = null;
-                                ext = null;
-                                lb = null;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MsgBox.error("An error occurred trying to load fuses", ex);
-            }
-
-            if (tr != null)
-                tr.Close();
-        }
-
-        public bool isSupported(string signature)
-        {
-            return (
-                fusebitslo.ContainsKey(signature) &&
-                fusebitshi.ContainsKey(signature) &&
-                fusebitsext.ContainsKey(signature) &&
-                lockbits.ContainsKey(signature)
-                );
-        }
-
-        public string getLfuse(string signature)
-        {
-            return getBits(signature, fusebitslo);
-        }
-
-        public string getHfuse(string signature)
-        {
-            return getBits(signature, fusebitshi);
-        }
-
-        public string getEfuse(string signature)
-        {
-            return getBits(signature, fusebitsext);
-        }
-
-        public string getLockBits(string signature)
-        {
-            return getBits(signature, lockbits);
-        }
-
-        private string getBits(string signature, Hashtable table)
-        {
-            if (table.ContainsKey(signature))
-                return table[signature].ToString();
-
-            return "?,?,?,?,?,?,?,?";
-        }
-        
+    protected override object data {
+      get { return null; }
+      set { }
     }
-    
+
+    private FusesList()
+        : base(FILE_BITS, "fuses") {
+      load();
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+    private void load() {
+      string signature = null;
+      string high = null;
+      string low = null;
+      string ext = null;
+      string lb = null;
+      TextReader tr = null;
+
+      try {
+        tr = new StreamReader(fileLocation);
+
+        using( XmlReader reader = XmlReader.Create(tr) ) {
+          while( reader.Read() ) {
+            if( reader.NodeType == XmlNodeType.Element ) {
+              string name = reader.Name;
+
+              if( name == "mcu" )
+                signature = reader.GetAttribute("signature");
+
+              reader.Read();
+              switch( name ) {
+                case "high":
+                  high = reader.ReadContentAsString();
+                  break;
+                case "low":
+                  low = reader.ReadContentAsString();
+                  break;
+                case "ext":
+                  ext = reader.ReadContentAsString();
+                  break;
+                case "lock":
+                  lb = reader.ReadContentAsString();
+                  break;
+                default:
+                  break;
+              }
+            } else if( reader.NodeType == XmlNodeType.EndElement ) {
+              if( reader.Name == "mcu" && signature != null ) {
+                if( lb != null )
+                  lockbits.Add(signature, lb);
+                if( low != null )
+                  fusebitslo.Add(signature, low);
+                if( high != null )
+                  fusebitshi.Add(signature, high);
+                if( ext != null )
+                  fusebitsext.Add(signature, ext);
+
+                signature = null;
+                high = null;
+                low = null;
+                ext = null;
+                lb = null;
+              }
+            }
+          }
+        }
+      }
+      catch( Exception ex ) {
+        MsgBox.error("An error occurred trying to load fuses", ex);
+      }
+
+      if( tr != null )
+        tr.Close();
+    }
+
+    public bool isSupported( string signature ) {
+      return (
+          fusebitslo.ContainsKey(signature) &&
+          fusebitshi.ContainsKey(signature) &&
+          fusebitsext.ContainsKey(signature) &&
+          lockbits.ContainsKey(signature)
+          );
+    }
+
+    public string getLfuse( string signature ) {
+      return getBits(signature, fusebitslo);
+    }
+
+    public string getHfuse( string signature ) {
+      return getBits(signature, fusebitshi);
+    }
+
+    public string getEfuse( string signature ) {
+      return getBits(signature, fusebitsext);
+    }
+
+    public string getLockBits( string signature ) {
+      return getBits(signature, lockbits);
+    }
+
+    private string getBits( string signature, Hashtable table ) {
+      if( table.ContainsKey(signature) )
+        return table[signature].ToString();
+
+      return "?,?,?,?,?,?,?,?";
+    }
+
+  }
+
 }

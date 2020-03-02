@@ -8,22 +8,18 @@
 
 using System;
 
-namespace avrdudess
-{
-    public class Part : IComparable
-    {
-        public string name { get; private set; }
-        public string fullName { get; private set; }
+namespace avrdudess {
+  public class Part : IComparable {
+    public string name { get; private set; }
+    public string fullName { get; private set; }
 
-        public Part(string name, string fullName)
-        {
-            this.name = name;
-            this.fullName = fullName;
-        }
-
-        public int CompareTo(object other)
-        {
-            return fullName.CompareTo(((Part)other).fullName);
-        }
+    public Part( string name, string fullName ) {
+      this.name = name;
+      this.fullName = fullName;
     }
+
+    public int CompareTo( object other ) {
+      return fullName.CompareTo(((Part)other).fullName);
+    }
+  }
 }
