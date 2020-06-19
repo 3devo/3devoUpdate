@@ -23,7 +23,7 @@ namespace avrdudess {
     private bool processErrorStreamOpen;
     private bool enableConsoleUpdate;
     protected string outputLog { get; private set; }
-    private UInt16 upload_status = 0;
+    private Action<string> ConsoleOutputCallback = null;
 
     public enum OutputTo {
       Log,
@@ -141,9 +141,6 @@ namespace avrdudess {
     }
 
     private void p_Exited( object sender, EventArgs e ) {
-      if( upload_status == 0 )
-        Util.consoleWrite("Uploading file failed!");
-
       if( OnProcessEnd != null )
         OnProcessEnd(this, EventArgs.Empty);
 
@@ -152,10 +149,14 @@ namespace avrdudess {
       onFinish = null;
     }
 
+    public void SetConsoleOutputHandler(Action<string> CallbackFunction) {
+      if (CallbackFunction != null)
+        ConsoleOutputCallback = CallbackFunction;
+    }
+
     // Progress bars don't work using async output, since it only fires when a new line is received
     // Problem: Slow if the process outputs a lot of text
     private void tConsoleUpdate() {
-      upload_status = 0;
       while( true ) {
         Thread.Sleep(15);
 
@@ -169,89 +170,13 @@ namespace avrdudess {
             // TODO: read from stdError AND stdOut (AVRDUDE outputs stuff through stdError)
             if( p.StandardError.Read(buff, 0, buff.Length) > 0 ) {
               string s = new string(buff);
-              //Util.consoleWrite(s);
-              // Debug info
-              if( Constants.DEBUG_STATUS == true ) {
-                System.Diagnostics.Debug.Write(s);
-              }
 
-              // Connection problem occured 
-              if( s.Contains("ser_open():")
-                      || s.Contains("stk500")
-                      || s.Contains("ser_send()")
-                      || s.Contains("can't open device")
-                  ) {
-                Util.consoleClear();
-                Util.consoleWrite("Connection problem...\n");
-                Util.consoleWrite("\n");
-                Util.consoleWrite("Possible problems:\n");
-                Util.consoleWrite("  - Usb cable is disconnected.\n");
-                Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
-                Util.consoleWrite("  - Not properly working usb cable.\n");
-                Util.consoleWrite("\n");
-                Util.consoleWrite("Before contacting service:\n");
-                Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
-                Util.consoleWrite("  - Try to upload again.\n");
-                Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
-                Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
-                upload_status = 0;
-              }
-
-              /* To do: more specific problem handling
-              // COM port conection failed
-              if (s.Contains("can't open device"))
-              {
-                  Util.consoleWrite("\tIs the filament extruder still connected?\n");
-                  Util.consoleWrite("\tYes? Disconnect and reconnect the filament extruder.\n");
-                  Util.consoleWrite("\tTry to upload again..\n");
-                  Util.consoleWrite("\tIf it keeps on happening, contact service support..\n");
-                  upload_status = 0;
-              }
-
-              // COM port conection failed
-              if (s.Contains("programmer is not responding"))
-              {
-                  Util.consoleWrite("\tProgrammer is not responding..\n\n");
-                  Util.consoleWrite("\tPossible problem is a not properly working usb cable..\n\n");
-                  Util.consoleWrite("\tNeed help? Contact service for more support..\n");
-                  upload_status = 0;
-              }
-              */
-
-              // Writing selected file
-              if( s.Contains("Writing |") ) {
-                Util.consoleWrite("Uploading file");
-                upload_status = 1;
-              }
-
-              // Writing selected file
-              else if( (s.Contains("#")) && (upload_status == 1) ) {
-                Util.consoleWrite(".");
-              }
-
-              if( (s.Contains("| 100%")) && (upload_status == 1) ) {
-                upload_status = 2;
-              }
-
-              // Uploading was succesful
-              if( s.Contains("avrdude.exe done.  Thank you.")
-              && (upload_status == 2)
-              ) {
-                Util.consoleWrite("\n");
-                Util.consoleWrite("Uploading file was successful!");
-                upload_status = 3;
-
-                // Debug info
-                if( Constants.DEBUG_STATUS == true ) {
-                  System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
-                  System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n");
-                }
-              }
+              ConsoleOutputCallback(s);
             }
           }
         }
-        catch( Exception ) {
-
+        catch( Exception e ) {
+          // TODO: handle these errors properly
         }
       }
     }

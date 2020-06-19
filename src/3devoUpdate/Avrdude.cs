@@ -69,6 +69,8 @@ namespace avrdudess {
       Eeprom
     }
 
+    private UInt16 upload_status = 0;
+
     private readonly List<Programmer> _programmers;
     private readonly List<MCU> _mcus;
     public string version { get; private set; }
@@ -98,6 +100,7 @@ namespace avrdudess {
     }
 
     public void load() {
+      base.SetConsoleOutputHandler(ConsoleOutputHandler);
       base.load(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
       getVersion();
@@ -114,6 +117,86 @@ namespace avrdudess {
       // Add default
       _programmers.Insert(0, new Programmer("", "Select a programmer..."));
       _mcus.Insert(0, new MCU("", "Select an MCU..."));
+    }
+
+    public void ConsoleOutputHandler(string outputInfo) {
+      // Debug info
+      if( Constants.DEBUG_STATUS == true ) {
+        System.Diagnostics.Debug.Write(outputInfo);
+      }
+
+      // Connection problem occured 
+      if( outputInfo.Contains("ser_open():")
+              || outputInfo.Contains("stk500")
+              || outputInfo.Contains("ser_send()")
+              || outputInfo.Contains("can't open device")
+          ) {
+        Util.consoleClear();
+        Util.consoleWrite("Connection problem...\n");
+        Util.consoleWrite("\n");
+        Util.consoleWrite("Possible problems:\n");
+        Util.consoleWrite("  - Usb cable is disconnected.\n");
+        Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
+        Util.consoleWrite("  - Not properly working usb cable.\n");
+        Util.consoleWrite("\n");
+        Util.consoleWrite("Before contacting service:\n");
+        Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
+        Util.consoleWrite("  - Try to upload again.\n");
+        Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
+        Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
+        upload_status = 0;
+      }
+
+      /* To do: more specific problem handling
+      // COM port conection failed
+      if (s.Contains("can't open device"))
+      {
+          Util.consoleWrite("\tIs the filament extruder still connected?\n");
+          Util.consoleWrite("\tYes? Disconnect and reconnect the filament extruder.\n");
+          Util.consoleWrite("\tTry to upload again..\n");
+          Util.consoleWrite("\tIf it keeps on happening, contact service support..\n");
+          upload_status = 0;
+      }
+
+      // COM port conection failed
+      if (s.Contains("programmer is not responding"))
+      {
+          Util.consoleWrite("\tProgrammer is not responding..\n\n");
+          Util.consoleWrite("\tPossible problem is a not properly working usb cable..\n\n");
+          Util.consoleWrite("\tNeed help? Contact service for more support..\n");
+          upload_status = 0;
+      }
+      */
+
+      // Writing selected file
+      if( outputInfo.Contains("Writing |") ) {
+        Util.consoleWrite("Uploading file");
+        upload_status = 1;
+      }
+
+      // Writing selected file
+      else if( (outputInfo.Contains("#")) && (upload_status == 1) ) {
+        Util.consoleWrite(".");
+      }
+
+      if( (outputInfo.Contains("| 100%")) && (upload_status == 1) ) {
+        upload_status = 2;
+      }
+
+      // Uploading was succesful
+      if( outputInfo.Contains("avrdude.exe done.  Thank you.")
+      && (upload_status == 2)
+      ) {
+        Util.consoleWrite("\n");
+        Util.consoleWrite("Uploading file was successful!");
+        upload_status = 3;
+
+        // Debug info
+        if( Constants.DEBUG_STATUS == true ) {
+          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
+          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n");
+        }
+      }
     }
 
     // Get AVRDUDE version
@@ -330,6 +413,7 @@ namespace avrdudess {
 
       }
 
+      upload_status = 0;
       base.launch(args, onFinish, param, outputTo);
     }
 
