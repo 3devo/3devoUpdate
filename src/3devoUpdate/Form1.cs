@@ -15,8 +15,11 @@ using System.IO.Ports;
 using System.Media;
 using System.Windows.Forms;
 using System.Management;
+using System.Text.RegularExpressions;
+using avrdudess;
+using Action = avrdudess.Action;
 
-namespace avrdudess {
+namespace devoUpdate {
   public partial class Form1 : Form {
 
     public bool ready = false;

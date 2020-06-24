@@ -8,6 +8,7 @@
 
 using System;
 using System.Windows.Forms;
+using devoUpdate;
 
 namespace avrdudess {
   static class Constants {

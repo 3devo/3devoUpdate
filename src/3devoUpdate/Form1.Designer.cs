@@ -1,4 +1,4 @@
-﻿namespace avrdudess
+﻿namespace devoUpdate
 {
     partial class Form1
     {

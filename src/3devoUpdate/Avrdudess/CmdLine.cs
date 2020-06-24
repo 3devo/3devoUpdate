@@ -8,6 +8,7 @@
 
 using System;
 using System.Text;
+using devoUpdate;
 
 namespace avrdudess {
   // Move this class to Avrdude class or somthing instead of it being on its own?
