@@ -26,10 +26,9 @@ namespace devoUpdate {
 
     private const string WEB_ADDR_FUSE_SETTINGS = "http://www.engbedded.com/fusecalc";
     private const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
-    private const string PORT_NOT_SELECTED = "No COM port selected...\n";
-    private const string HEX_FILE_NOT_SELECTED = "No hex file selected...\n";
-    private const string NO_EXTRUDER_CONNECTED = "No filament extruder connected.."
-                                               + "\t Or 3devo driver not installed..\n";
+    private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
+    private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
+    private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
     private const string READY_FOR_UPLOADING = "Ready for uploading!\n";
     private ToolTip ToolTips;
     private Avrdude avrdude;
@@ -288,9 +287,9 @@ namespace devoUpdate {
       /* COM port connection */
       // No extruder connected/found
       if( cmbPort.Items.Count == 0 ) {
-        txtStatusInfo.AppendText(NO_EXTRUDER_CONNECTED);
         port = "";
         selected_port_name = port;
+        txtStatusInfo.AppendText(NO_MACHINE_CONNECTED);
         port_selected = false;
       }
       // 1 or more COM ports connected with filament extruder
