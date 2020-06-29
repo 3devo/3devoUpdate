@@ -24,7 +24,6 @@ namespace devoUpdate {
 
     public bool ready = false;
 
-    private const string WEB_ADDR_FUSE_SETTINGS = "http://www.engbedded.com/fusecalc";
     private const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
     private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
     private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
