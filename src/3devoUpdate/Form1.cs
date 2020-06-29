@@ -107,8 +107,6 @@ namespace devoUpdate {
 
       avrdude.OnProcessStart += avrdude_OnProcessStart;
       avrdude.OnProcessEnd += avrdude_OnProcessEnd;
-      avrdude.OnVersionChange += avrdude_OnVersionChange;
-      avrdude.OnDetectedMCU += avrdude_OnDetectedMCU;
 
       avrdude.load();
 
@@ -193,26 +191,6 @@ namespace devoUpdate {
       tssStatus.Text = "Ready";
     }
 
-    // Found MCU
-    private void avrdude_OnDetectedMCU( object sender, DetectedMCUEventArgs e ) {
-      if( e.mcu != null ) {
-        System.Diagnostics.Debug.WriteLine("Detected " + e.mcu.signature + " = " + e.mcu.fullName);
-
-        Invoke(new MethodInvoker(() => {
-          // Select the MCU that was found
-          //cmbMCU.SelectedItem = e.mcu;
-        }));
-      } else {
-        // Failed to detect MCU, show log so we can see what went wrong
-        System.Diagnostics.Debug.WriteLine("Unable to detect MCU");
-        System.Diagnostics.Debug.WriteLine("\n" + avrdude.log);
-      }
-    }
-
-    // Version change
-    private void avrdude_OnVersionChange( object sender, EventArgs e ) {
-      setWindowTitle();
-    }
     #endregion
 
     #region Extra functions
