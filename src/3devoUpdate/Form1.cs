@@ -56,10 +56,7 @@ namespace devoUpdate {
     public string flashFileFormat;
     public string flashFileOperation;
     public byte verbosity;
-    public string port {
-      get { return cmbPort.Text.Trim(); }
-      set { cmbPort.Text = value; }
-    }
+    public string port;
     public string flashFile {
       get { return txtFlashFile.Text.Trim(); }
       set { txtFlashFile.Text = value; }
