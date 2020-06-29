@@ -184,9 +184,7 @@ namespace avrdudess {
       }
 
       // Uploading was succesful
-      if( outputInfo.Contains("avrdude.exe done.  Thank you.")
-      && (upload_status == 2)
-      ) {
+      if( outputInfo.Contains("avrdude.exe done.  Thank you.") && (upload_status == 2) ) {
         Util.consoleWrite("\n");
         Util.consoleWrite("Uploading file was successful!");
         upload_status = 3;
