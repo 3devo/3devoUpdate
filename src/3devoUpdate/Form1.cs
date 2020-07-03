@@ -142,6 +142,7 @@ namespace devoUpdate {
       update_com_ports();
       selected_port_name = "";
       SerialPortService.PortsChanged += ( sender1, changedArgs ) => update_com_ports();
+      cmbPort.SelectedIndexChanged += new System.EventHandler(this.cmbPort_SelectedIndexChanged);
 
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {

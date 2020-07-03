@@ -79,7 +79,6 @@
       this.cmbPort.Name = "cmbPort";
       this.cmbPort.Size = new System.Drawing.Size(418, 24);
       this.cmbPort.TabIndex = 3;
-      this.cmbPort.SelectedIndexChanged += new System.EventHandler(this.cmbPort_SelectedIndexChanged);
       // 
       // txtStatusInfo
       // 
