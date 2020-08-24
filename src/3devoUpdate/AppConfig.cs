@@ -35,6 +35,7 @@ namespace avrdudess {
     public string avrdudeLoc;   // avrdude location
     public string avrdudeConfLoc;   // avrdude.conf location
     public string avrSizeLoc;   // avr-size location
+    public string dfuUtilLoc;   // dfu-util location
     public Point windowLocation; // For persistant window location across sessions
 
     [XmlIgnore]
@@ -62,6 +63,7 @@ namespace avrdudess {
       avrdudeLoc = "";
       avrdudeConfLoc = "";
       avrSizeLoc = "";
+      dfuUtilLoc = "";
     }
 
     public new void load() {
