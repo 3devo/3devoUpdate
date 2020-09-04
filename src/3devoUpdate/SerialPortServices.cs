@@ -1,17 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.IO.Ports;
 using System.Management;
+using System.Threading;
+using System.Timers;
 
 namespace avrdudess {
   public static class SerialPortService {
     private static string[] serial_ports;
     private static ManagementEventWatcher arrival;
     private static ManagementEventWatcher removal;
-
-
+    private static readonly object _syncObject = new object();
+    private static volatile bool _Disposed = false;
+    private static System.Timers.Timer timer;
+    private static ElapsedEventHandler ElapsedHandler;
 
     // Set serial port service active
     static SerialPortService() {
@@ -42,9 +46,22 @@ namespace avrdudess {
     ///     at System.Management.ManagementEventWatcher.Finalize()
     ///InnerException:
     /// </summary>
-    public static void CleanUp() {
+    public static void Dispose( bool disposing ) {
       arrival.Stop();
       removal.Stop();
+
+      lock( _syncObject ) {
+        if( _Disposed ) {
+          return;
+        }
+
+        if( disposing ) {
+          _Disposed = disposing;
+          timer.Stop();
+          timer.Elapsed -= ElapsedHandler;
+          timer.Dispose();
+        }
+      }
     }
 
     public static event EventHandler<PortsChangedArgs> PortsChanged;
@@ -78,8 +95,15 @@ namespace avrdudess {
         // Start listening for events
         arrival.Start();
         removal.Start();
-      }
-      catch( ManagementException err ) {
+
+        lock( _syncObject ) {
+            timer = new System.Timers.Timer();
+            timer.AutoReset = false;
+            timer.Interval = 1000 * 0.5;
+            ElapsedHandler = new ElapsedEventHandler(Timer_Elapsed);
+            timer.Elapsed += ElapsedHandler;
+        }
+      } catch( ManagementException err ) {
         // debug info
         if( Constants.DEBUG_STATUS == true ) {
           System.Diagnostics.Debug.WriteLine("Failed to start MonitorDeviceChanges: " + err.ToString());
@@ -89,17 +113,58 @@ namespace avrdudess {
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity")]
     private static void RaisePortsChangedIfNecessary( EventType eventType ) {
-      lock( SerialPortService.serial_ports ) {
-        // debug info
-        if( Constants.DEBUG_STATUS == true ) {
-          System.Diagnostics.Debug.WriteLine(
-          "Ports Changed:\t" + eventType);
+      // debug info
+      if( Constants.DEBUG_STATUS == true ) {
+        System.Diagnostics.Debug.WriteLine(
+        "Ports Changed:\t" + eventType);
+      }
+
+      lock( _syncObject ) {
+        try {
+          // Raise events can happen multiple times per device, depending if the device has multiple
+          // interfaces when it's a composite device. To prevent too much workload when refreshing the 
+          // device list of connected devices, only refresh the list after x milliseconds has elapsed.
+          if( timer.Enabled == false )
+            timer.Start();
+        }
+        catch( ObjectDisposedException ) {
+          // Possible race condition with Dispose can cause an exception to trigger when underlying
+          // timer is being disposed. Starting the timer fail in this case.
+          // https://msdn.microsoft.com/en-us/library/b97tkt95(v=vs.110).aspx#Anchor_2
+          if( _Disposed ) {
+            // We still want to throw the exception in case someone really tries to start the timer
+            // after disposal has finished. There's a slight race condition here where we might not
+            // throw even though disposal is already done.
+            // Since the offending code would most likely already be "failing" unreliably, it's 
+            // probably ok in that sense to increase the "unreliable failure" time-window slightly.
+            throw;
+          }
         }
 
+      }
+    }
+
+    public static string[] GetAvailableSerialPorts() {
+      return SerialPort.GetPortNames();
+    }
+
+    private static void Timer_Elapsed( object sender, ElapsedEventArgs e ) {
+      lock( _syncObject ) {
+        try {
+          timer.Stop();
+        }
+        catch( ObjectDisposedException ) {
+          // See the try-catch construction at timer.Start() for more information.
+          if( _Disposed ) {
+            throw;
+          }
+        }
+      }
+
+      lock( SerialPortService.serial_ports ) {
         var availableSerialPorts = GetAvailableSerialPorts();
         if( !serial_ports.SequenceEqual(availableSerialPorts) ) {
           serial_ports = availableSerialPorts;
-          PortsChanged.Raise(null, new PortsChangedArgs(eventType, serial_ports));
 
           // debug info
           if( Constants.DEBUG_STATUS == true ) {
@@ -111,17 +176,18 @@ namespace avrdudess {
             System.Diagnostics.Debug.Write("\n\n");
           }
         }
-      }
-    }
 
-    public static string[] GetAvailableSerialPorts() {
-      return SerialPort.GetPortNames();
+        // Always fire this event, since we now need access to other device without 
+        // a serial port as well (such as STM32 bootloader).
+        PortsChanged.Raise(null, new PortsChangedArgs(EventType.All, serial_ports));
+      }
     }
   }
 
   public enum EventType {
     Insertion,
     Removal,
+    All,
   }
 
   public class PortsChangedArgs : EventArgs {

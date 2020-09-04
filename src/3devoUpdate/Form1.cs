@@ -433,7 +433,7 @@ namespace devoUpdate {
       Config.Prop.save();
 
       // Close Serial ports service threads
-      SerialPortService.CleanUp();
+      SerialPortService.Dispose(true);
     }
 
     // COM port index changed by mouse click
