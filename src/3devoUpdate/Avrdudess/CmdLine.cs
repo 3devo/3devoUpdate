@@ -79,8 +79,6 @@ namespace avrdudess {
       }
     }
 
-
-
     private void cmdLineOption( string arg, string val ) {
       sb.Append("-" + arg + " " + val + " ");
     }
