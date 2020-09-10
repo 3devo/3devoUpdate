@@ -18,6 +18,7 @@ using System.Management;
 using System.Text.RegularExpressions;
 using avrdudess;
 using Action = avrdudess.Action;
+using System.Linq;
 
 namespace devoUpdate {
   public partial class Form1 : Form {
@@ -136,6 +137,7 @@ namespace devoUpdate {
       UpdateDeviceList();
       SerialPortService.PortsChanged += ( sender1, changedArgs ) => UpdateDeviceList();
       cmbPort.SelectedIndexChanged += new System.EventHandler(this.CmbPort_SelectedIndexChanged);
+      cmbPort.DropDownClosed += new System.EventHandler(this.CmbPort_DropDownClosed);
 
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
@@ -169,6 +171,7 @@ namespace devoUpdate {
 
     // Avrdude process has ended
     private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
+      Util.InvokeIfRequired(this, c => { Update_interface(); });
       tssStatus.Text = "Ready";
     }
 
@@ -225,6 +228,9 @@ namespace devoUpdate {
       if( this.cmbPort.Items.Count > 0 ) {
         Util.InvokeIfRequired(this, c => { this.cmbPort.SelectedIndex = 0; });
       }
+
+      // update status info text
+      Util.InvokeIfRequired(this, c => { Update_interface(); });
     }
 
     /* Update the statusinfo field
@@ -232,26 +238,21 @@ namespace devoUpdate {
      *  -  com port selection
      *  -  hex file set
      */
-    private void Update_status_info() {
+    private void Update_interface() {
+      port_selected = false;
+
       // Clear status info text
       txtStatusInfo.Clear();
 
-      // No extruder connected/found
+      // No devices connected/found
       if( cmbPort.Items.Count == 0 ) {
         txtStatusInfo.AppendText(NO_MACHINE_CONNECTED);
-        port_selected = false;
       }
-      // 1 or more COM ports connected with filament extruder
+      // 1 or more devices connected
       else {
-        // Only 1 connected filament extruder found
-        if( cmbPort.Items.Count == 1 ) {
+        if (cmbPort.SelectedIndex != -1)
           port_selected = true;
-          port_selected = false;
-        } else {
-          port_selected = true;
-        }
 
-        // update status info for com port
         if( port_selected == false ) {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
         }
@@ -304,7 +305,6 @@ namespace devoUpdate {
 
     // FlashFile is changed event
     private void FlashFile_Changed( object sender, EventArgs e ) {
-      Update_status_info();
     }
 
     // Browse for flash file
@@ -363,7 +363,57 @@ namespace devoUpdate {
       SerialPortService.Dispose(true);
     }
 
+    private void CmbPort_DropDownClosed( object sender, EventArgs e ) {
+        ComboboxDropdown_Handler();
+    }
+
+    // https://stackoverflow.com/questions/16966264/what-event-handler-to-use-for-combobox-item-selected-selected-item-not-necessar //Todo
     private void CmbPort_SelectedIndexChanged( object sender, EventArgs e ) {
+        ComboboxDropdown_Handler();
+    }
+
+    private static int PrevSelectionIndex = -1;
+    private void ComboboxDropdown_Handler() {
+      IsReady = false; // Something has changed in the selection, so let's check if ecerything is ok later on.
+      btnUpload.Enabled = false;
+
+      if( cmbPort.SelectedIndex == -1 ) {
+        PrevSelectionIndex = -1;
+        port = "";
+      } else {
+        try {
+          if( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
+            // Clear the file selection when another device type is selected.
+            txtFlashFile.Text = "";
+            hex_file_selected = false;
+          }
+        }
+        catch( ArgumentOutOfRangeException ) {
+          // Check fails if the previous selection index is still negative, which is ok for the first time.
+        }
+
+        switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+          case USBDeviceList.MachineType.FilamentMaker:
+            port = DeviceInfoList.ElementAt(cmbPort.SelectedIndex).DeviceId; // COM number
+            break;
+          case USBDeviceList.MachineType.StBootloader:
+            txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
+              + "binary file for your machine, since we cannot determine which 3devo device is connected!");
+            port = "UNUSED"; // No need for port number when using DFU-Util
+            break;
+          case USBDeviceList.MachineType.AiridDryer:
+            port = "UNUSED"; // No need for port number when using DFU-Util
+            break;
+          case USBDeviceList.MachineType.None:
+          default:
+            port = "";
+            break;
+        }
+
+        PrevSelectionIndex = cmbPort.SelectedIndex;
+      }
+
+      Update_interface();
     }
 
     private void PictureBox1_Click( object sender, EventArgs e ) {
