@@ -269,17 +269,29 @@ namespace devoUpdate {
      * - Depends on status of selected com port and hex file
      */
     private void Set_btUpload() {
-      if( (prog != null)
-        && (mcu != null)
-        && (port != "")
-        && (port_selected == true)
-        && (hex_file_selected == true)
-        ) {
+      if( (port != "") 
+          && (port_selected == true)
+          && (hex_file_selected == true)
+          && !IsReady ) {
         IsReady = true;
         btnUpload.Enabled = true;
-        txtStatusInfo.AppendText(READY_FOR_UPLOADING);
-      } else {
-        btnUpload.Enabled = false;
+      }
+    }
+
+    private void StartUploadProcess() {
+      switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+        case USBDeviceList.MachineType.FilamentMaker:
+          avrCmdLine.generate();
+          avrdude.load();
+          avrdude.launch(cmdBox);
+          break;
+        case USBDeviceList.MachineType.StBootloader: // Fall through
+        case USBDeviceList.MachineType.AiridDryer:
+          break;
+        case USBDeviceList.MachineType.None:
+        default:
+          // TODO: Error no compatible upload method found.
+          break;
       }
     }
     #endregion
@@ -342,6 +354,12 @@ namespace devoUpdate {
 
     // Upload button
     private void BtnUpload_Click( object sender, EventArgs e ) {
+      if( IsReady ) {
+        StartUploadProcess();
+        IsReady = false;
+      } else {
+        Console.Error.Write("Could not perform upload operation, no file or machine selected yet.");
+      }
     }
 
     // Resize console when form resizes
