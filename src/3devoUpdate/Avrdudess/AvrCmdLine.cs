@@ -14,11 +14,11 @@ namespace avrdudess {
   // Move this class to Avrdude class or somthing instead of it being on its own?
   // Maybe have stuff like setMCU("m328") in Avrdude class and do away with this one?
   // TODO: Improve this class
-  class CmdLine {
+  class AvrCmdLine {
     private Form1 mainForm;
     private StringBuilder sb = new StringBuilder();
 
-    public CmdLine( Form1 mainForm ) {
+    public AvrCmdLine( Form1 mainForm ) {
       this.mainForm = mainForm;
     }
 

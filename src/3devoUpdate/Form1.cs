@@ -32,7 +32,7 @@ namespace devoUpdate {
     private ToolTip ToolTips;
     private Avrdude avrdude;
     private Presets presets;
-    private CmdLine cmdLine;
+    private AvrCmdLine avrCmdLine;
     private bool drag = false;
     private bool port_selected = false;
     private bool hex_file_selected = false;
@@ -98,7 +98,7 @@ namespace devoUpdate {
       if( Config.Prop.windowLocation != null && Config.Prop.windowLocation != new Point(0, 0) )
         Location = Config.Prop.windowLocation;
 
-      cmdLine = new CmdLine(this);
+      avrCmdLine = new AvrCmdLine(this);
       avrdude = new Avrdude();
 
       avrdude.OnProcessStart += avrdude_OnProcessStart;
@@ -309,7 +309,7 @@ namespace devoUpdate {
         && (hex_file_selected == true)
         ) {
         IsReady = true;
-        cmdLine.generate();
+        avrCmdLine.generate();
         btnUpload.Enabled = true;
         txtStatusInfo.AppendText(READY_FOR_UPLOADING);
       } else {
