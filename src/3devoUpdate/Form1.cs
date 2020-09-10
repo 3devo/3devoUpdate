@@ -169,12 +169,12 @@ namespace devoUpdate {
 
     #region Avrdude status
 
-    // AVRDUDE process has started
+    // Avrdude process has started
     private void Avrdude_OnProcessStart( object sender, EventArgs e ) {
-      tssStatus.Text = "AVRDUDE is running...";
+      tssStatus.Text = "Avrdude is running.";
     }
 
-    // AVRDUDE process has ended
+    // Avrdude process has ended
     private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
       SerialPort connectPort;
       if( selected_port_name.Length > 0 ) {
@@ -294,12 +294,11 @@ namespace devoUpdate {
         txtStatusInfo.AppendText(HEX_FILE_NOT_SELECTED);
       }
 
-      // Set upload button
       Set_btUpload();
     }
 
     /* Set status upload button
-     * - Deoends on status of selected com port and hex file
+     * - Depends on status of selected com port and hex file
      */
     private void Set_btUpload() {
       if( (prog != null)
@@ -385,7 +384,7 @@ namespace devoUpdate {
       }
     }
 
-    // Upload!
+    // Upload button
     private void BtnUpload_Click( object sender, EventArgs e ) {
       selected_port_name = this.port;
       avrdude.launch(this.cmdBox);
