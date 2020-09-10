@@ -57,7 +57,7 @@
       this.btnUpload.TabIndex = 36;
       this.btnUpload.Text = "Upload";
       this.btnUpload.UseVisualStyleBackColor = true;
-      this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
+      this.btnUpload.Click += new System.EventHandler(this.BtnUpload_Click);
       // 
       // groupBox
       // 
@@ -127,7 +127,7 @@
       this.btnFlashBrowse.TabIndex = 7;
       this.btnFlashBrowse.Text = "...";
       this.btnFlashBrowse.UseVisualStyleBackColor = true;
-      this.btnFlashBrowse.Click += new System.EventHandler(this.btnFlashBrowse_Click);
+      this.btnFlashBrowse.Click += new System.EventHandler(this.BtnFlashBrowse_Click);
       // 
       // statusBar1
       // 
@@ -165,7 +165,7 @@
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox1.TabIndex = 53;
       this.pictureBox1.TabStop = false;
-      this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+      this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
       // 
       // btnAbout
       // 
@@ -176,7 +176,7 @@
       this.btnAbout.TabIndex = 54;
       this.btnAbout.Text = "About";
       this.btnAbout.UseVisualStyleBackColor = true;
-      this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+      this.btnAbout.Click += new System.EventHandler(this.BtnAbout_Click);
       // 
       // Form1
       // 

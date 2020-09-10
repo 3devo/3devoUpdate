@@ -71,7 +71,7 @@ namespace devoUpdate {
         presetToLoad = args[0];
 
       Icon = AssemblyData.icon;
-      setWindowTitle();
+      SetWindowTitle();
 
       // Make sure console is the right size
       Form1_Resize(this, null);
@@ -101,18 +101,18 @@ namespace devoUpdate {
       avrCmdLine = new AvrCmdLine(this);
       avrdude = new Avrdude();
 
-      avrdude.OnProcessStart += avrdude_OnProcessStart;
-      avrdude.OnProcessEnd += avrdude_OnProcessEnd;
+      avrdude.OnProcessStart += Avrdude_OnProcessStart;
+      avrdude.OnProcessEnd += Avrdude_OnProcessEnd;
 
       avrdude.load();
 
       // Setup memory files/usage bars
-      enableClientAreaDrag(Controls);
+      EnableClientAreaDrag(Controls);
 
       // Drag and drop flash file
       gbFlashFile.AllowDrop = true;
-      gbFlashFile.DragEnter += event_DragEnter;
-      gbFlashFile.DragDrop += event_DragDrop;
+      gbFlashFile.DragEnter += Event_DragEnter;
+      gbFlashFile.DragDrop += Event_DragDrop;
 
       // Flash file
       openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
@@ -139,10 +139,10 @@ namespace devoUpdate {
 
       // Update serial ports etc
       //cmbPort.DropDown += cbPort_DropDown;
-      update_com_ports();
+      Update_com_ports();
       selected_port_name = "";
-      SerialPortService.PortsChanged += ( sender1, changedArgs ) => update_com_ports();
-      cmbPort.SelectedIndexChanged += new System.EventHandler(this.cmbPort_SelectedIndexChanged);
+      SerialPortService.PortsChanged += ( sender1, changedArgs ) => Update_com_ports();
+      cmbPort.SelectedIndexChanged += new System.EventHandler(this.CmbPort_SelectedIndexChanged);
 
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
@@ -150,18 +150,18 @@ namespace devoUpdate {
       }
     }
 
-    private void setWindowTitle() {
+    private void SetWindowTitle() {
       Text = String.Format("{0} v{1}.{2}", AssemblyData.title, AssemblyData.version.Major, AssemblyData.version.Minor);
     }
 
     // Click and drag (almost) anywhere to move window
-    private void enableClientAreaDrag( Control.ControlCollection controls ) {
+    private void EnableClientAreaDrag( Control.ControlCollection controls ) {
       foreach( Control c in controls ) {
         if( c is GroupBox || c is Label || c is PictureBox ) {
           c.MouseDown += Form1_MouseDown;
           c.MouseUp += Form1_MouseUp;
           c.MouseMove += Form1_MouseMove;
-          enableClientAreaDrag(c.Controls);
+          EnableClientAreaDrag(c.Controls);
         }
       }
     }
@@ -170,12 +170,12 @@ namespace devoUpdate {
     #region Avrdude status
 
     // AVRDUDE process has started
-    private void avrdude_OnProcessStart( object sender, EventArgs e ) {
+    private void Avrdude_OnProcessStart( object sender, EventArgs e ) {
       tssStatus.Text = "AVRDUDE is running...";
     }
 
     // AVRDUDE process has ended
-    private void avrdude_OnProcessEnd( object sender, EventArgs e ) {
+    private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
       SerialPort connectPort;
       if( selected_port_name.Length > 0 ) {
         connectPort = new SerialPort(selected_port_name);
@@ -193,7 +193,7 @@ namespace devoUpdate {
      * 
      * Code derived from: https://stackoverflow.com/questions/3331043/get-list-of-connected-usb-devices
      */
-    private void update_com_ports() {
+    private void Update_com_ports() {
       if( this.cmbPort.InvokeRequired ) {
         BeginInvoke(new Action(() => this.cmbPort.Items.Clear()));
       } else {
@@ -239,9 +239,9 @@ namespace devoUpdate {
 
       // update status info text
       if( InvokeRequired ) {
-        BeginInvoke(new Action(() => update_status_info()));
+        BeginInvoke(new Action(() => Update_status_info()));
       } else {
-        update_status_info();
+        Update_status_info();
       }
 
     }
@@ -251,7 +251,7 @@ namespace devoUpdate {
      *  -  com port selection
      *  -  hex file set
      */
-    private void update_status_info() {
+    private void Update_status_info() {
       // Clear status info text
       txtStatusInfo.Clear();
 
@@ -321,20 +321,20 @@ namespace devoUpdate {
     #region UI Events
 
     // Drag and drop
-    private void event_DragEnter( object sender, DragEventArgs e ) {
+    private void Event_DragEnter( object sender, DragEventArgs e ) {
       if( e.Data.GetDataPresent(DataFormats.FileDrop) )
         e.Effect = DragDropEffects.Copy;
     }
 
     // Drag and drop
-    private void event_DragDrop( object sender, DragEventArgs e ) {
+    private void Event_DragDrop( object sender, DragEventArgs e ) {
       string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
       if( ((GroupBox)sender).Name == "gbFlashFile" )
         txtFlashFile.Text = files[0];
     }
 
     // Port drop down, refresh available ports
-    private void cbPort_DropDown( object sender, EventArgs e ) {
+    private void CbPort_DropDown( object sender, EventArgs e ) {
       //this.cmbPort.Items.Clear();
       PlatformID os = Environment.OSVersion.Platform;
       if( os == PlatformID.Unix || os == PlatformID.MacOSX ) {
@@ -375,18 +375,18 @@ namespace devoUpdate {
 
     // FlashFile is changed event
     private void FlashFile_Changed( object sender, EventArgs e ) {
-      update_status_info();
+      Update_status_info();
     }
 
     // Browse for flash file
-    private void btnFlashBrowse_Click( object sender, EventArgs e ) {
+    private void BtnFlashBrowse_Click( object sender, EventArgs e ) {
       if( openFileDialog1.ShowDialog() == DialogResult.OK ) {
         txtFlashFile.Text = openFileDialog1.FileName;
       }
     }
 
     // Upload!
-    private void btnUpload_Click( object sender, EventArgs e ) {
+    private void BtnUpload_Click( object sender, EventArgs e ) {
       selected_port_name = this.port;
       avrdude.launch(this.cmdBox);
     }
@@ -437,21 +437,21 @@ namespace devoUpdate {
     }
 
     // COM port index changed by mouse click
-    private void cmbPort_SelectedIndexChanged( object sender, EventArgs e ) {
+    private void CmbPort_SelectedIndexChanged( object sender, EventArgs e ) {
       if( selected_port_name.Equals(port) == false ) {
         selected_port_name = port;
         //System.Diagnostics.Debug.WriteLine(
         //    "SelectedIndexChanged: selected port = " + selected_port_name);
-        update_status_info();
+        Update_status_info();
       }
     }
 
-    private void pictureBox1_Click( object sender, EventArgs e ) {
+    private void PictureBox1_Click( object sender, EventArgs e ) {
       // website: 3devo.com
       System.Diagnostics.Process.Start("https://www.3devo.com/contact/");
     }
 
-    private void btnAbout_Click( object sender, EventArgs e ) {
+    private void BtnAbout_Click( object sender, EventArgs e ) {
       string about = "";
       about += AssemblyData.title + Environment.NewLine;
       about += "Version " + AssemblyData.version.ToString() + Environment.NewLine;
