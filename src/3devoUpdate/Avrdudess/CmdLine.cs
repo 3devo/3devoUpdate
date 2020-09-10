@@ -47,7 +47,7 @@ namespace avrdudess {
     }
 
     public void generate() {
-      if( !mainForm.ready )
+      if( !mainForm.IsReady )
         return;
 
       generateMain();

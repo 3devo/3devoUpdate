@@ -22,9 +22,9 @@ using Action = avrdudess.Action;
 namespace devoUpdate {
   public partial class Form1 : Form {
 
-    public bool ready = false;
 
     private const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
+    public bool IsReady = false;
     private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
     private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
     private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
@@ -134,7 +134,7 @@ namespace devoUpdate {
       // EDITED: load 3devo presets and set cmd line for avrdude
       presets = new Presets(this);
       presets.load_3devo();
-      ready = false;
+      IsReady = false;
       btnUpload.Enabled = false;
 
       // Update serial ports etc
@@ -308,7 +308,7 @@ namespace devoUpdate {
         && (port_selected == true)
         && (hex_file_selected == true)
         ) {
-        ready = true;
+        IsReady = true;
         cmdLine.generate();
         btnUpload.Enabled = true;
         txtStatusInfo.AppendText(READY_FOR_UPLOADING);
