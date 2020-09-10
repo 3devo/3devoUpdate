@@ -50,6 +50,7 @@ namespace devoUpdate {
     public string flashFileFormat;
     public string flashFileOperation;
     public byte verbosity;
+    public List<USBDeviceList> DeviceInfoList;
     public string port;
     public string flashFile {
       get { return txtFlashFile.Text.Trim(); }
@@ -76,6 +77,8 @@ namespace devoUpdate {
 
       Util.UI = this;
       Util.consoleSet(txtStatusInfo);
+
+      DeviceInfoList = new List<USBDeviceList>();
     }
 
     private void Form1_Load( object sender, EventArgs e ) {
@@ -130,6 +133,8 @@ namespace devoUpdate {
       btnUpload.Enabled = false;
 
       // Update serial ports etc
+      UpdateDeviceList();
+      SerialPortService.PortsChanged += ( sender1, changedArgs ) => UpdateDeviceList();
       cmbPort.SelectedIndexChanged += new System.EventHandler(this.CmbPort_SelectedIndexChanged);
 
       // Debug info
@@ -170,6 +175,57 @@ namespace devoUpdate {
     #endregion
 
     #region Extra functions
+
+    /* Update connected COM ports 
+     * - Retrieve all used USB ports and filter 3devo specific devices
+     * 
+     * Code derived from: https://stackoverflow.com/questions/3331043/get-list-of-connected-usb-devices
+     */
+    private void UpdateDeviceList() {
+      DeviceInfoList.Clear();
+
+      Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Clear(); });
+
+      // Get all the serial devices which do not make use of DFU programming
+      USBDeviceList.GetSerialDevices(DeviceInfoList);
+
+      // Get all the other devices in the list (such as Airid Dryer)
+      USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_3DEVO, USBDeviceList.HARDWARE_PRODUCT_ID_GD);
+
+      // Also add the devices which don't have a product name yet (ST generic)
+      USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_ST_GENERIC, USBDeviceList.HARDWARE_PRODUCT_ID_ST_GENERIC);
+
+      // Add all components to the combobox list
+      UInt16 DeviceCount = 0;
+      string NewHardwareField = "";
+      foreach( USBDeviceList Device in DeviceInfoList ) {
+        switch( Device.MachineName ) {
+          case USBDeviceList.MachineType.FilamentMaker:
+            NewHardwareField = (DeviceCount + 1).ToString() + ". " + Device.Name; // Hardware friendly name
+            break;
+          case USBDeviceList.MachineType.StBootloader:
+            NewHardwareField = (DeviceCount + 1).ToString() + ". " + "Generic ST device" + $" ({Device.SerialNumber:X})";
+            break;
+          case USBDeviceList.MachineType.AiridDryer:
+            NewHardwareField = (DeviceCount + 1).ToString() + ". " + "Airid Dryer" + $" ({Device.SerialNumber:X})";
+            break;
+          case USBDeviceList.MachineType.None: // fall-through
+          default:
+            Util.InvokeIfRequired(this, c => {
+              txtStatusInfo.AppendText($"An unexpected machine found in device list ({Device.MachineName})");
+            });
+            break;
+        }
+
+        Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Add(NewHardwareField); });
+
+        DeviceCount += 1;
+      }
+
+      if( this.cmbPort.Items.Count > 0 ) {
+        Util.InvokeIfRequired(this, c => { this.cmbPort.SelectedIndex = 0; });
+      }
+    }
 
     /* Update the statusinfo field
      *  -  no filament extruder connected
