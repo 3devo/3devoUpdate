@@ -21,9 +21,6 @@ using Action = avrdudess.Action;
 
 namespace devoUpdate {
   public partial class Form1 : Form {
-
-
-    private const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
     public bool IsReady = false;
     private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
     private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
@@ -37,9 +34,7 @@ namespace devoUpdate {
     private bool port_selected = false;
     private bool hex_file_selected = false;
     private string presetToLoad;
-    private string selected_port_name = "";
     private Point dragStart;
-
 
     #region Control getters and setters
 
@@ -104,7 +99,6 @@ namespace devoUpdate {
       avrdude.OnProcessStart += Avrdude_OnProcessStart;
       avrdude.OnProcessEnd += Avrdude_OnProcessEnd;
 
-      avrdude.load();
 
       // Setup memory files/usage bars
       EnableClientAreaDrag(Controls);
@@ -115,8 +109,6 @@ namespace devoUpdate {
       gbFlashFile.DragDrop += Event_DragDrop;
 
       // Flash file
-      openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
-      openFileDialog1.Filter += "|All files (*.*)|*.*";
       openFileDialog1.CheckFileExists = false;
       openFileDialog1.FileName = "";
       openFileDialog1.Title = "Open flash file";
@@ -138,10 +130,6 @@ namespace devoUpdate {
       btnUpload.Enabled = false;
 
       // Update serial ports etc
-      //cmbPort.DropDown += cbPort_DropDown;
-      Update_com_ports();
-      selected_port_name = "";
-      SerialPortService.PortsChanged += ( sender1, changedArgs ) => Update_com_ports();
       cmbPort.SelectedIndexChanged += new System.EventHandler(this.CmbPort_SelectedIndexChanged);
 
       // Debug info
@@ -176,75 +164,12 @@ namespace devoUpdate {
 
     // Avrdude process has ended
     private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
-      SerialPort connectPort;
-      if( selected_port_name.Length > 0 ) {
-        connectPort = new SerialPort(selected_port_name);
-        connectPort.Close();
-      }
       tssStatus.Text = "Ready";
     }
 
     #endregion
 
     #region Extra functions
-
-    /* Update connected COM ports 
-     * - Retrieve all used USB ports and filter 3devo specific devices
-     * 
-     * Code derived from: https://stackoverflow.com/questions/3331043/get-list-of-connected-usb-devices
-     */
-    private void Update_com_ports() {
-      if( this.cmbPort.InvokeRequired ) {
-        BeginInvoke(new Action(() => this.cmbPort.Items.Clear()));
-      } else {
-        this.cmbPort.Items.Clear();
-      }
-      ManagementObjectSearcher searcher = new ManagementObjectSearcher(
-          "root\\CIMV2", "SELECT * FROM Win32_SerialPort");
-
-      foreach( ManagementObject queryObj in searcher.Get() ) {
-        string pnpDeviceId = (string)queryObj["PNPDeviceID"];
-        Console.WriteLine("Description  : {0}", queryObj["Description"]);
-        Console.WriteLine(" PNPDeviceID : {0}", pnpDeviceId);
-
-        if( string.IsNullOrEmpty(pnpDeviceId) )
-          continue;
-
-        string txt = "SELECT * FROM win32_PNPEntity where DeviceID='" + pnpDeviceId.Replace("\\", "\\\\") + "'";
-        ManagementObjectSearcher deviceSearch = new ManagementObjectSearcher("root\\CIMV2", txt);
-        foreach( ManagementObject device in deviceSearch.Get() ) {
-          string[] hardwareIds = (string[])device["HardWareID"];
-          if( (hardwareIds != null) && (hardwareIds.Length > 0) ) {
-            for( UInt16 i = 0; i < hardwareIds.Length; i++ ) {
-              if( hardwareIds[i].Equals(PORT_HARDWARE_ID_FE) ) {
-                if( this.cmbPort.InvokeRequired ) {
-                  BeginInvoke(new Action(() => this.cmbPort.Items.Add(queryObj["DeviceID"].ToString())));
-                } else {
-                  this.cmbPort.Items.Add(queryObj["DeviceID"].ToString());
-                }
-                break;
-              }
-            }
-          }
-        }
-      }
-
-      if( this.cmbPort.Items.Count > 0 ) {
-        if( InvokeRequired ) {
-          BeginInvoke(new Action(() => this.cmbPort.SelectedIndex = 0));
-        } else {
-          this.cmbPort.SelectedIndex = 0;
-        }
-      }
-
-      // update status info text
-      if( InvokeRequired ) {
-        BeginInvoke(new Action(() => Update_status_info()));
-      } else {
-        Update_status_info();
-      }
-
-    }
 
     /* Update the statusinfo field
      *  -  no filament extruder connected
@@ -255,11 +180,8 @@ namespace devoUpdate {
       // Clear status info text
       txtStatusInfo.Clear();
 
-      /* COM port connection */
       // No extruder connected/found
       if( cmbPort.Items.Count == 0 ) {
-        port = "";
-        selected_port_name = port;
         txtStatusInfo.AppendText(NO_MACHINE_CONNECTED);
         port_selected = false;
       }
@@ -267,16 +189,10 @@ namespace devoUpdate {
       else {
         // Only 1 connected filament extruder found
         if( cmbPort.Items.Count == 1 ) {
-          selected_port_name = cmbPort.Items[0].ToString();
-          port = selected_port_name;
           port_selected = true;
-        }
-        // More than 1 connected filament extruder found
-        else if( selected_port_name.Length == 0 ) {
           port_selected = false;
         } else {
           port_selected = true;
-          port = selected_port_name;
         }
 
         // update status info for com port
@@ -284,7 +200,6 @@ namespace devoUpdate {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
         }
       }
-      selected_port_name = port;
 
       /* Hex file imported */
       if( flashFile.Length > 0 ) {
@@ -308,7 +223,6 @@ namespace devoUpdate {
         && (hex_file_selected == true)
         ) {
         IsReady = true;
-        avrCmdLine.generate();
         btnUpload.Enabled = true;
         txtStatusInfo.AppendText(READY_FOR_UPLOADING);
       } else {
@@ -332,46 +246,6 @@ namespace devoUpdate {
         txtFlashFile.Text = files[0];
     }
 
-    // Port drop down, refresh available ports
-    private void CbPort_DropDown( object sender, EventArgs e ) {
-      //this.cmbPort.Items.Clear();
-      PlatformID os = Environment.OSVersion.Platform;
-      if( os == PlatformID.Unix || os == PlatformID.MacOSX ) {
-        string[] devPrefixs = new string[]
-        {
-          "ttyS", // Normal serial port
-          "ttyUSB", // USB <-> serial converter
-          "ttyACM", // USB <-> serial converter (usually an Arduino)
-          "lp" // Parallel port
-        };
-
-        // https://stackoverflow.com/questions/434494/serial-port-rs232-in-mono-for-multiple-platforms
-        string[] devs;
-        try {
-          devs = Directory.GetFiles("/dev/", "*", SearchOption.TopDirectoryOnly);
-        }
-        catch( Exception ) {
-          return;
-        }
-
-        Array.Sort(devs);
-
-        // Loop through each device
-        foreach( string dev in devs ) {
-          // See if device starts with one of the prefixes
-          foreach( string prefix in devPrefixs ) {
-            if( dev.StartsWith("/dev/" + prefix) ) {
-              cmbPort.Items.Add(dev);
-              break;
-            }
-          }
-        }
-      } else // Windows
-        {
-        //update_com_ports();
-      }
-    }
-
     // FlashFile is changed event
     private void FlashFile_Changed( object sender, EventArgs e ) {
       Update_status_info();
@@ -386,8 +260,6 @@ namespace devoUpdate {
 
     // Upload button
     private void BtnUpload_Click( object sender, EventArgs e ) {
-      selected_port_name = this.port;
-      avrdude.launch(this.cmdBox);
     }
 
     // Resize console when form resizes
@@ -435,14 +307,7 @@ namespace devoUpdate {
       SerialPortService.Dispose(true);
     }
 
-    // COM port index changed by mouse click
     private void CmbPort_SelectedIndexChanged( object sender, EventArgs e ) {
-      if( selected_port_name.Equals(port) == false ) {
-        selected_port_name = port;
-        //System.Diagnostics.Debug.WriteLine(
-        //    "SelectedIndexChanged: selected port = " + selected_port_name);
-        Update_status_info();
-      }
     }
 
     private void PictureBox1_Click( object sender, EventArgs e ) {
