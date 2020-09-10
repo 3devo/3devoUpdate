@@ -255,15 +255,11 @@ namespace devoUpdate {
 
         if( port_selected == false ) {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
+        } else if( flashFile.Length == 0 ) {
+          txtStatusInfo.AppendText(HEX_FILE_NOT_SELECTED);
+        } else {
+          txtStatusInfo.AppendText(READY_FOR_UPLOADING);
         }
-      }
-
-      /* Hex file imported */
-      if( flashFile.Length > 0 ) {
-        hex_file_selected = true;
-      } else {
-        hex_file_selected = false;
-        txtStatusInfo.AppendText(HEX_FILE_NOT_SELECTED);
       }
 
       Set_btUpload();
@@ -309,9 +305,39 @@ namespace devoUpdate {
 
     // Browse for flash file
     private void BtnFlashBrowse_Click( object sender, EventArgs e ) {
-      if( openFileDialog1.ShowDialog() == DialogResult.OK ) {
-        txtFlashFile.Text = openFileDialog1.FileName;
+      IsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
+      btnUpload.Enabled = false;
+
+      //openFileDialog1.Filter += "|All files (*.*)|*.*"; // Probably not a necessary option.
+      switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+        case USBDeviceList.MachineType.FilamentMaker:
+          openFileDialog1.Title = "Select Filemant Maker or Filament Extruder firmware";
+          openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
+          break;
+        case USBDeviceList.MachineType.StBootloader:
+        case USBDeviceList.MachineType.AiridDryer:
+          openFileDialog1.Title = "Select Airid Dryer firmware";
+          openFileDialog1.Filter = "Binary files (*.bin)|*.bin";
+          break;
+        case USBDeviceList.MachineType.None:
+        default:
+          // TODO: Error unsupported model.
+          break;
       }
+
+      DialogResult Result = DialogResult.None;
+      Result = openFileDialog1.ShowDialog();
+
+      if( Result == DialogResult.OK ) {
+        if( openFileDialog1.FileName.Length != 0 ) {
+          txtFlashFile.Text = openFileDialog1.FileName;
+          hex_file_selected = true;
+        } else {
+          hex_file_selected = false;
+        }
+      }
+
+      Update_interface();
     }
 
     // Upload button
