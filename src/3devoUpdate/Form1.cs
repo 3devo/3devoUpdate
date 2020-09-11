@@ -36,6 +36,7 @@ namespace devoUpdate {
     private bool hex_file_selected = false;
     private string presetToLoad;
     private Point dragStart;
+    private EventHandler combobox_selectedIndexChangedHandler;
 
     #region Control getters and setters
 
@@ -136,8 +137,14 @@ namespace devoUpdate {
       // Update serial ports etc
       UpdateDeviceList();
       SerialPortService.PortsChanged += ( sender1, changedArgs ) => UpdateDeviceList();
-      cmbPort.SelectedIndexChanged += new System.EventHandler(this.CmbPort_SelectedIndexChanged);
+      combobox_selectedIndexChangedHandler = new System.EventHandler(this.CmbPort_SelectedIndexChanged);
+      cmbPort.SelectedIndexChanged += combobox_selectedIndexChangedHandler;
       cmbPort.DropDownClosed += new System.EventHandler(this.CmbPort_DropDownClosed);
+
+      // Call the port selected index changed handler just once if a device is already connected.
+      if (cmbPort.SelectedIndex != -1) {
+        combobox_selectedIndexChangedHandler(this, new EventArgs());
+      }
 
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
