@@ -71,9 +71,6 @@ namespace devoUpdate {
       Icon = AssemblyData.icon;
       SetWindowTitle();
 
-      // Make sure console is the right size
-      Form1_Resize(this, null);
-
       MaximumSize = new Size(Size.Width, int.MaxValue);
       MinimumSize = new Size(Size.Width, Height - this.txtStatusInfo.Height);
 
@@ -367,11 +364,6 @@ namespace devoUpdate {
       } else {
         Console.Error.Write("Could not perform upload operation, no file or machine selected yet.");
       }
-    }
-
-    // Resize console when form resizes
-    private void Form1_Resize( object sender, EventArgs e ) {
-      //txtConsole.Height = Height - txtConsole.Top - 64;
     }
 
     // Drag client area
