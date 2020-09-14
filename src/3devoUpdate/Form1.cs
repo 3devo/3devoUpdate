@@ -250,10 +250,13 @@ namespace devoUpdate {
 
       // No devices connected/found
       if( cmbPort.Items.Count == 0 ) {
+        btnFlashBrowse.Enabled = false;
         txtStatusInfo.AppendText(NO_MACHINE_CONNECTED);
       }
       // 1 or more devices connected
       else {
+        btnFlashBrowse.Enabled = true;
+
         if (cmbPort.SelectedIndex != -1)
           port_selected = true;
 
