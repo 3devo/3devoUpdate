@@ -34,7 +34,6 @@ namespace devoUpdate {
     private bool drag = false;
     private bool port_selected = false;
     private bool hex_file_selected = false;
-    private string presetToLoad;
     private Point dragStart;
     private EventHandler combobox_selectedIndexChangedHandler;
 
@@ -62,11 +61,8 @@ namespace devoUpdate {
 
     #region Initializing
 
-    public Form1( string[] args ) {
+    public Form1() {
       InitializeComponent();
-
-      if( args.Length > 0 )
-        presetToLoad = args[0];
 
       Icon = AssemblyData.icon;
       SetWindowTitle();
