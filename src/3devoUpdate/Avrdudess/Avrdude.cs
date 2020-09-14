@@ -197,8 +197,6 @@ namespace avrdudess {
     }
 
     // Get AVRDUDE version
-    // Credits:
-    // Simone Chifari (Getting AVRDUDE version and displaying in window title)
     private void getVersion() {
       version = "";
 
@@ -258,10 +256,6 @@ namespace avrdudess {
         MsgBox.error("Error reading " + FILE_AVRDUDECONF, ex);
         return;
       }
-
-      // Credits:
-      // Uwe Tanger (New parse code for changed avrdude.conf)
-      // Simone Chifari (New parse code for changed avrdude.conf & getting MCU signature)
 
       char[] trimChars = new char[3] { ' ', '"', ';' };
 

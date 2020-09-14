@@ -48,10 +48,6 @@ namespace avrdudess {
 
     // Write to console
     public static void consoleWrite( string text ) {
-      // Credits:
-      // Uwe Tanger (Console in main window instead of separate window)
-      // Dean (Console in main window instead of separate window)
-
       if( console != null )
         console.InvokeIfRequired(c => { ((TextBox)c).AppendText(text); });
     }

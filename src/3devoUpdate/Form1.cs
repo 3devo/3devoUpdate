@@ -90,8 +90,6 @@ namespace devoUpdate {
       Config.Prop.load();
 
       // Persist window location across sessions
-      // Credits:
-      // gl.tter
       if( Config.Prop.windowLocation != null && Config.Prop.windowLocation != new Point(0, 0) )
         Location = Config.Prop.windowLocation;
 
@@ -390,9 +388,6 @@ namespace devoUpdate {
     // Save configuration when closing
     private void Form1_FormClosing( object sender, FormClosingEventArgs e ) {
       // Persist window location across sessions
-      // Credits:
-      // gl.tter
-
       if( WindowState != FormWindowState.Minimized )
         Config.Prop.windowLocation = Location;
 

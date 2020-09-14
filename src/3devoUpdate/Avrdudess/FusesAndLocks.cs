@@ -12,9 +12,6 @@ using System.IO;
 using System.Xml;
 
 namespace avrdudess {
-  // Credits:
-  // Simone Chifari (Fuse selector)
-
   sealed class FusesList : XmlFile<object> {
 
     private const string FILE_BITS = "bits.xml";
