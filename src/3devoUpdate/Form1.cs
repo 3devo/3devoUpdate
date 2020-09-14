@@ -175,7 +175,7 @@ namespace devoUpdate {
 
     // Avrdude process has ended
     private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
-      Util.InvokeIfRequired(this, c => { Update_interface(); });
+      Util.InvokeIfRequired(this, c => { UpdateInterface(); });
       tssStatus.Text = "Ready";
     }
 
@@ -234,7 +234,7 @@ namespace devoUpdate {
       }
 
       // update status info text
-      Util.InvokeIfRequired(this, c => { Update_interface(); });
+      Util.InvokeIfRequired(this, c => { UpdateInterface(); });
     }
 
     /* Update the statusinfo field
@@ -242,7 +242,7 @@ namespace devoUpdate {
      *  -  com port selection
      *  -  hex file set
      */
-    private void Update_interface() {
+    private void UpdateInterface() {
       port_selected = false;
 
       // Clear status info text
@@ -356,7 +356,7 @@ namespace devoUpdate {
         }
       }
 
-      Update_interface();
+      UpdateInterface();
     }
 
     // Upload button
@@ -459,7 +459,7 @@ namespace devoUpdate {
         PrevSelectionIndex = cmbPort.SelectedIndex;
       }
 
-      Update_interface();
+      UpdateInterface();
     }
 
     private void PictureBox1_Click( object sender, EventArgs e ) {
