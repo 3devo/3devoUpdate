@@ -269,17 +269,10 @@ namespace devoUpdate {
         }
       }
 
-      Set_btUpload();
-    }
-
-    /* Set status upload button
-     * - Depends on status of selected com port and hex file
-     */
-    private void Set_btUpload() {
-      if( (port != "") 
+      if( (port != "")
           && (port_selected == true)
           && (hex_file_selected == true)
-          && !IsReady ) {
+          && (!IsReady) ) {
         IsReady = true;
         btnUpload.Enabled = true;
       }
