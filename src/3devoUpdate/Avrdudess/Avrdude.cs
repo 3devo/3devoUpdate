@@ -170,17 +170,16 @@ namespace avrdudess {
 
       // Writing selected file
       if( outputInfo.Contains("Writing |") ) {
-        Util.consoleWrite("Uploading file");
+        Util.consoleWrite("Uploading file: |");
         upload_status = 1;
       }
 
-      // Writing selected file
-      else if( (outputInfo.Contains("#")) && (upload_status == 1) ) {
-        Util.consoleWrite(".");
-      }
+      if( upload_status == 1 ) {
+        if ( (outputInfo.Contains("#")) )
+          Util.consoleWrite("#");
 
-      if( (outputInfo.Contains("| 100%")) && (upload_status == 1) ) {
-        upload_status = 2;
+        if( (outputInfo.Contains("| 100%")) )
+          upload_status = 2;
       }
 
       // Uploading was succesful
