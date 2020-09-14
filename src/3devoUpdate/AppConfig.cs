@@ -10,6 +10,7 @@ using System;
 using System.Drawing;
 using System.Xml.Serialization;
 
+      //public int Revision;
 namespace avrdudess {
   // Contains all configuration stuff
   [XmlType(TypeName = "ConfigData")] // For backwards compatability with old (<v2.2) config.xml
