@@ -221,8 +221,6 @@ namespace devoUpdate {
      *  -  hex file set
      */
     private void UpdateInterface() {
-      port_selected = false;
-
       // Clear status info text
       txtStatusInfo.Clear();
 
@@ -235,9 +233,6 @@ namespace devoUpdate {
       else {
         btnFlashBrowse.Enabled = true;
 
-        if (cmbPort.SelectedIndex != -1)
-          port_selected = true;
-
         if( port_selected == false ) {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
         } else if( flashFile.Length == 0 ) {
@@ -247,8 +242,7 @@ namespace devoUpdate {
         }
       }
 
-      if( (port != "")
-          && (port_selected == true)
+      if( (port_selected == true)
           && (hex_file_selected == true)
           && (!IsReady) ) {
         IsReady = true;
@@ -389,14 +383,17 @@ namespace devoUpdate {
     private static int PrevSelectionIndex = -1;
     private void ComboboxDropdown_Handler() {
       IsReady = false; // Something has changed in the selection, so let's check if ecerything is ok later on.
+      port_selected = false;
       btnUpload.Enabled = false;
 
       if( cmbPort.SelectedIndex == -1 ) {
         PrevSelectionIndex = -1;
         avrCmdLine.port = "";
       } else {
+        USBDeviceList usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
+
         try {
-          if( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
+          if( usbDevice.MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
             // Clear the file selection when another device type is selected.
             txtFlashFile.Text = "";
             hex_file_selected = false;
@@ -406,15 +403,18 @@ namespace devoUpdate {
           // Check fails if the previous selection index is still negative, which is ok for the first time.
         }
 
-        switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+        switch( usbDevice.MachineName ) {
           case USBDeviceList.MachineType.FilamentMaker:
-            avrCmdLine.port = DeviceInfoList.ElementAt(cmbPort.SelectedIndex).DeviceId; // COM number
+            avrCmdLine.port = usbDevice.DeviceId; // COM number
+            port_selected = true;
             break;
           case USBDeviceList.MachineType.StBootloader:
             txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
               + "binary file for your machine, since we cannot determine which 3devo device is connected!");
+            port_selected = true;
             break;
           case USBDeviceList.MachineType.AiridDryer:
+            port_selected = true;
             break;
           case USBDeviceList.MachineType.None:
           default:
