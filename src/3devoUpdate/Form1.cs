@@ -28,9 +28,8 @@ namespace devoUpdate {
     private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
     private const string READY_FOR_UPLOADING = "Ready for uploading!\n";
     private ToolTip ToolTips;
-    private Avrdude avrdude;
-    private Presets presets;
     private AvrCmdLine avrCmdLine;
+    private Avrdude avrdude;
     private bool drag = false;
     private bool port_selected = false;
     private bool hex_file_selected = false;
@@ -39,20 +38,7 @@ namespace devoUpdate {
 
     #region Control getters and setters
 
-    public Programmer prog;
-    public MCU mcu;
-    public string baudRate;
-    public bool force;
-    public bool disableVerify;
-    public bool disableFlashErase;
-    public bool eraseFlashAndEEPROM;
-    public bool doNotWrite;
-    public string cmdBox;
-    public string flashFileFormat;
-    public string flashFileOperation;
-    public byte verbosity;
     public List<USBDeviceList> DeviceInfoList;
-    public string port;
     public string flashFile {
       get { return txtFlashFile.Text.Trim(); }
       set { txtFlashFile.Text = value; }
@@ -119,9 +105,7 @@ namespace devoUpdate {
       ToolTips.Active = Config.Prop.toolTips;
 
       // Load saved presets
-      // EDITED: load 3devo presets and set cmd line for avrdude
-      presets = new Presets(this);
-      presets.load_3devo();
+      avrCmdLine.LoadFilamentMakerDefaults();
       IsReady = false;
       btnUpload.Enabled = false;
 
@@ -277,7 +261,7 @@ namespace devoUpdate {
         case USBDeviceList.MachineType.FilamentMaker:
           avrCmdLine.generate();
           avrdude.load();
-          avrdude.launch(cmdBox);
+          avrdude.launch(avrCmdLine.cmdBox);
           break;
         case USBDeviceList.MachineType.StBootloader: // Fall through
         case USBDeviceList.MachineType.AiridDryer:
@@ -409,7 +393,7 @@ namespace devoUpdate {
 
       if( cmbPort.SelectedIndex == -1 ) {
         PrevSelectionIndex = -1;
-        port = "";
+        avrCmdLine.port = "";
       } else {
         try {
           if( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
@@ -424,19 +408,17 @@ namespace devoUpdate {
 
         switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
           case USBDeviceList.MachineType.FilamentMaker:
-            port = DeviceInfoList.ElementAt(cmbPort.SelectedIndex).DeviceId; // COM number
+            avrCmdLine.port = DeviceInfoList.ElementAt(cmbPort.SelectedIndex).DeviceId; // COM number
             break;
           case USBDeviceList.MachineType.StBootloader:
             txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
               + "binary file for your machine, since we cannot determine which 3devo device is connected!");
-            port = "UNUSED"; // No need for port number when using DFU-Util
             break;
           case USBDeviceList.MachineType.AiridDryer:
-            port = "UNUSED"; // No need for port number when using DFU-Util
             break;
           case USBDeviceList.MachineType.None:
           default:
-            port = "";
+            avrCmdLine.port = "";
             break;
         }
 

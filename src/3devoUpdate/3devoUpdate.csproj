@@ -97,7 +97,6 @@
     <Compile Include="Avrdudess\ManagementException.cs" />
     <Compile Include="Avrdudess\MCU.cs" />
     <Compile Include="Avrdudess\Part.cs" />
-    <Compile Include="Avrdudess\Presets.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Avrdudess\Programmer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

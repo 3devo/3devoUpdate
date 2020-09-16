@@ -18,8 +18,39 @@ namespace avrdudess {
     private Form1 mainForm;
     private StringBuilder sb = new StringBuilder();
 
+    public Programmer prog;
+    public MCU mcu;
+    public string baudRate;
+    public bool force;
+    public bool disableVerify;
+    public bool disableFlashErase;
+    public bool eraseFlashAndEEPROM;
+    public bool doNotWrite;
+    public string flashFileFormat;
+    public string flashFileOperation;
+    public byte verbosity;
+    public string port;
+    public string cmdBox;
+
     public AvrCmdLine( Form1 mainForm ) {
       this.mainForm = mainForm;
+    }
+
+    //Load 3devo Default settings
+    public void LoadFilamentMakerDefaults() {
+      prog = new Programmer("arduino");
+      mcu = new MCU("m2560");
+      port = "";
+      baudRate = "115200";
+      flashFileFormat = "i";
+      flashFileOperation = "w";
+
+      force = false;
+      disableVerify = true;
+      disableFlashErase = false;
+      eraseFlashAndEEPROM = false;
+      doNotWrite = false;
+      verbosity = 1;
     }
 
     private void generateMain( bool addMCU = true ) {
@@ -27,22 +58,22 @@ namespace avrdudess {
       sb.Length = 0;
       sb.Capacity = 0;
 
-      if( mainForm.prog != null && mainForm.prog.name.Length > 0 )
-        cmdLineOption("c", mainForm.prog.name);
+      if( prog != null && prog.name.Length > 0 )
+        cmdLineOption("c", prog.name);
 
-      if( mainForm.mcu != null && mainForm.mcu.name.Length > 0 && addMCU )
-        cmdLineOption("p", mainForm.mcu.name);
+      if( mcu != null && mcu.name.Length > 0 && addMCU )
+        cmdLineOption("p", mcu.name);
 
-      if( mainForm.port.Length > 0 )
-        cmdLineOption("P", mainForm.port);
+      if( port.Length > 0 )
+        cmdLineOption("P", port);
 
-      if( mainForm.baudRate.Length > 0 )
-        cmdLineOption("b", mainForm.baudRate);
+      if( baudRate.Length > 0 )
+        cmdLineOption("b", baudRate);
 
-      if( mainForm.force )
+      if( force )
         cmdLineOption("F");
 
-      for( byte i = 0; i < mainForm.verbosity; i++ )
+      for( byte i = 0; i < verbosity; i++ )
         cmdLineOption("v");
     }
 
@@ -52,28 +83,28 @@ namespace avrdudess {
 
       generateMain();
 
-      if( mainForm.disableVerify )
+      if( disableVerify )
         cmdLineOption("V");
 
-      if( mainForm.disableFlashErase )
+      if( disableFlashErase )
         cmdLineOption("D");
 
-      if( mainForm.eraseFlashAndEEPROM )
+      if( eraseFlashAndEEPROM )
         cmdLineOption("e");
 
-      if( mainForm.doNotWrite )
+      if( doNotWrite )
         cmdLineOption("n");
 
       if( mainForm.flashFile.Length > 0 )
-        cmdLineOption("U", "flash:" + mainForm.flashFileOperation + ":\"" + mainForm.flashFile + "\":" + mainForm.flashFileFormat);
+        cmdLineOption("U", "flash:" + flashFileOperation + ":\"" + mainForm.flashFile + "\":" + flashFileFormat);
 
-      mainForm.cmdBox = sb.ToString();
+      cmdBox = sb.ToString();
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
         System.Diagnostics.Debug.WriteLine("------------------------------------");
         System.Diagnostics.Debug.WriteLine("------------------------------------\n");
         System.Diagnostics.Debug.WriteLine("cmdLine generated:\n");
-        System.Diagnostics.Debug.WriteLine(mainForm.cmdBox);
+        System.Diagnostics.Debug.WriteLine(cmdBox);
         System.Diagnostics.Debug.WriteLine("\n------------------------------------");
         System.Diagnostics.Debug.WriteLine("------------------------------------\n");
       }
