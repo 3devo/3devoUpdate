@@ -9,15 +9,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.IO.Ports;
-using System.Media;
 using System.Windows.Forms;
-using System.Management;
-using System.Text.RegularExpressions;
 using avrdudess;
-using Action = avrdudess.Action;
 using System.Linq;
 
 namespace devoUpdate {
