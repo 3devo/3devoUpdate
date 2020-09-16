@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace devoUpdate {
   public partial class Form1 : Form {
-    public bool IsReady = false;
+    public bool downloadIsReady = false;
     private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
     private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
     private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
@@ -31,8 +31,8 @@ namespace devoUpdate {
     private AvrCmdLine avrCmdLine;
     private Avrdude avrdude;
     private bool drag = false;
-    private bool port_selected = false;
-    private bool hex_file_selected = false;
+    private bool deviceSelected = false;
+    private bool downloadFileSelected = false;
     private Point dragStart;
     private EventHandler combobox_selectedIndexChangedHandler;
 
@@ -106,7 +106,7 @@ namespace devoUpdate {
 
       // Load saved presets
       avrCmdLine.LoadFilamentMakerDefaults();
-      IsReady = false;
+      downloadIsReady = false;
       btnUpload.Enabled = false;
 
       // Update serial ports etc
@@ -233,7 +233,7 @@ namespace devoUpdate {
       else {
         btnFlashBrowse.Enabled = true;
 
-        if( port_selected == false ) {
+        if( deviceSelected == false ) {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
         } else if( flashFile.Length == 0 ) {
           txtStatusInfo.AppendText(HEX_FILE_NOT_SELECTED);
@@ -242,10 +242,10 @@ namespace devoUpdate {
         }
       }
 
-      if( (port_selected == true)
-          && (hex_file_selected == true)
-          && (!IsReady) ) {
-        IsReady = true;
+      if( (deviceSelected == true)
+          && (downloadFileSelected == true)
+          && (!downloadIsReady) ) {
+        downloadIsReady = true;
         btnUpload.Enabled = true;
       }
     }
@@ -289,7 +289,7 @@ namespace devoUpdate {
 
     // Browse for flash file
     private void BtnFlashBrowse_Click( object sender, EventArgs e ) {
-      IsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
+      downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
       btnUpload.Enabled = false;
 
       //openFileDialog1.Filter += "|All files (*.*)|*.*"; // Probably not a necessary option.
@@ -315,9 +315,9 @@ namespace devoUpdate {
       if( Result == DialogResult.OK ) {
         if( openFileDialog1.FileName.Length != 0 ) {
           txtFlashFile.Text = openFileDialog1.FileName;
-          hex_file_selected = true;
+          downloadFileSelected = true;
         } else {
-          hex_file_selected = false;
+          downloadFileSelected = false;
         }
       }
 
@@ -326,9 +326,9 @@ namespace devoUpdate {
 
     // Upload button
     private void BtnUpload_Click( object sender, EventArgs e ) {
-      if( IsReady ) {
+      if( downloadIsReady ) {
         StartUploadProcess();
-        IsReady = false;
+        downloadIsReady = false;
       } else {
         Console.Error.Write("Could not perform upload operation, no file or machine selected yet.");
       }
@@ -382,8 +382,8 @@ namespace devoUpdate {
 
     private static int PrevSelectionIndex = -1;
     private void ComboboxDropdown_Handler() {
-      IsReady = false; // Something has changed in the selection, so let's check if ecerything is ok later on.
-      port_selected = false;
+      downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
+      deviceSelected = false;
       btnUpload.Enabled = false;
 
       if( cmbPort.SelectedIndex == -1 ) {
@@ -396,7 +396,7 @@ namespace devoUpdate {
           if( usbDevice.MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
             // Clear the file selection when another device type is selected.
             txtFlashFile.Text = "";
-            hex_file_selected = false;
+            downloadFileSelected = false;
           }
         }
         catch( ArgumentOutOfRangeException ) {
@@ -406,15 +406,15 @@ namespace devoUpdate {
         switch( usbDevice.MachineName ) {
           case USBDeviceList.MachineType.FilamentMaker:
             avrCmdLine.port = usbDevice.DeviceId; // COM number
-            port_selected = true;
+            deviceSelected = true;
             break;
           case USBDeviceList.MachineType.StBootloader:
             txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
               + "binary file for your machine, since we cannot determine which 3devo device is connected!");
-            port_selected = true;
+            deviceSelected = true;
             break;
           case USBDeviceList.MachineType.AiridDryer:
-            port_selected = true;
+            deviceSelected = true;
             break;
           case USBDeviceList.MachineType.None:
           default:
