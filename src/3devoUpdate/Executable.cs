@@ -31,8 +31,8 @@ namespace devoUpdate {
       Console
     }
 
-    protected void load( string binaryName, string directory, bool enableConsoleWrite = true ) {
-      binary = searchForBinary(binaryName, directory);
+    protected void Load( string binaryName, string directory, bool enableConsoleWrite = true ) {
+      binary = SearchForBinary(binaryName, directory);
       processStartInfo = new ProcessStartInfo {
         FileName = "",
         Arguments = "",
@@ -52,7 +52,7 @@ namespace devoUpdate {
       }
     }
 
-    protected bool launch( string args, Action<object> onFinish, object param, OutputTo outputTo ) {
+    protected bool Launch( string args, Action<object> onFinish, object param, OutputTo outputTo ) {
       // Clear log
       outputLog = "";
       Util.consoleClear();
@@ -64,10 +64,10 @@ namespace devoUpdate {
       this.onFinish = onFinish;
       this.param = param;
 
-      return launch(args, outputTo);
+      return Launch(args, outputTo);
     }
 
-    private bool launch( string args, OutputTo outputTo ) {
+    private bool Launch( string args, OutputTo outputTo ) {
       execProcess = new Process();
 
       processStartInfo.FileName = binary;
@@ -75,8 +75,8 @@ namespace devoUpdate {
       execProcess.StartInfo = processStartInfo;
 
       if( outputTo == OutputTo.Log ) {
-        execProcess.OutputDataReceived += new DataReceivedEventHandler(outputLogHandler);
-        execProcess.ErrorDataReceived += new DataReceivedEventHandler(errorLogHandler);
+        execProcess.OutputDataReceived += new DataReceivedEventHandler(OutputLogHandler);
+        execProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorLogHandler);
       }
       execProcess.Exited += p_Exited;
 
@@ -146,7 +146,7 @@ namespace devoUpdate {
     }
 
     // These methods are needed to properly capture the process output for logging
-    private bool logger( string s ) {
+    private bool Logger( string s ) {
       if( s != null ) { // A null is sent when the stream is closed
         outputLog += s.Replace("\0", String.Empty) + Environment.NewLine;
         return true;
@@ -155,15 +155,15 @@ namespace devoUpdate {
       return false;
     }
 
-    private void outputLogHandler( object sender, DataReceivedEventArgs e ) {
-      processOutputStreamOpen = logger(e.Data);
+    private void OutputLogHandler( object sender, DataReceivedEventArgs e ) {
+      processOutputStreamOpen = Logger(e.Data);
     }
 
-    private void errorLogHandler( object sender, DataReceivedEventArgs e ) {
-      processErrorStreamOpen = logger(e.Data);
+    private void ErrorLogHandler( object sender, DataReceivedEventArgs e ) {
+      processErrorStreamOpen = Logger(e.Data);
     }
 
-    private string searchForBinary( string binaryName, string directory ) {
+    private string SearchForBinary( string binaryName, string directory ) {
       PlatformID os = Environment.OSVersion.Platform;
       if( os != PlatformID.MacOSX && os != PlatformID.Unix )
         binaryName += ".exe";

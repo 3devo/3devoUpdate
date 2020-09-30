@@ -102,7 +102,7 @@ namespace avrdudess {
 
     public void load() {
       base.SetConsoleOutputHandler(ConsoleOutputHandler);
-      base.load(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
+      base.Load(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
       getVersion();
 
@@ -405,7 +405,7 @@ namespace avrdudess {
       }
 
       upload_status = 0;
-      base.launch(args, onFinish, param, outputTo);
+      base.Launch(args, onFinish, param, outputTo);
     }
 
     public void launch( string args, OutputTo outputTo = OutputTo.Console ) {
