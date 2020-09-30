@@ -78,9 +78,6 @@ namespace avrdudess {
     }
 
     public void generate() {
-      if( !mainForm.downloadIsReady )
-        return;
-
       generateMain();
 
       if( disableVerify )
