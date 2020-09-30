@@ -15,6 +15,8 @@ namespace devoUpdate {
   abstract class Executable {
     private ProcessStartInfo processStartInfo;
     private Process execProcess;
+    private Thread stdoutThread;
+    private Thread stderrThread;
     private Action<object> onFinish;
     private object param;
     public event EventHandler OnProcessStart;
@@ -22,7 +24,6 @@ namespace devoUpdate {
     private string binary;
     private bool processOutputStreamOpen;
     private bool processErrorStreamOpen;
-    private bool enableConsoleUpdate;
     protected string outputLog { get; private set; }
     private Action<string> ConsoleOutputCallback = null;
 
@@ -31,8 +32,7 @@ namespace devoUpdate {
       Console
     }
 
-    protected void Load( string binaryName, string directory, bool enableConsoleWrite = true ) {
-      binary = SearchForBinary(binaryName, directory);
+    protected bool StartProcessesses() {
       processStartInfo = new ProcessStartInfo {
         FileName = "",
         Arguments = "",
@@ -43,23 +43,44 @@ namespace devoUpdate {
         RedirectStandardError = true,
       };
 
-      if( binary == null )
-        MsgBox.error(binaryName + " is missing!");
-      else if( enableConsoleWrite ) {
-        Thread t = new Thread(new ThreadStart(tConsoleUpdate));
-        t.IsBackground = true;
-        t.Start();
+      // Abort other processes if they are still busy
+      AbortProcesses();
+
+      if (execProcess == null)
+        execProcess = new Process();
+
+      CheckForValidProcess("Unable to start executable process.", false /*CheckForHasExited*/);
+
+      execProcess.EnableRaisingEvents = true;
+      execProcess.Exited += p_Exited;
+
+      return true;
+    }
+
+    protected void AbortProcesses() {
+      try {
+        if( stdoutThread != null )
+          stdoutThread.Abort();
       }
+      catch( Exception ex ) {
+        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stdout thread.\n" +
+            "Exception Message:\n" + ex.Message + "\nStack Trace:\n" + ex.StackTrace);
+      }
+
+      try {
+        if( stderrThread != null )
+          stderrThread.Abort();
+      }
+      catch( Exception ex ) {
+        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stderr thread.\n" +
+            "Exception Message:\n" + ex.Message + "\nStack Trace:\n" + ex.StackTrace);
+      }
+      stdoutThread = null;
+      stderrThread = null;
     }
 
     protected bool Launch( string args, Action<object> onFinish, object param, OutputTo outputTo ) {
-      // Clear log
       outputLog = "";
-      Util.consoleClear();
-
-      // Binary is missing
-      if( binary == null || !File.Exists(binary) )
-        return false;
 
       this.onFinish = onFinish;
       this.param = param;
@@ -68,32 +89,42 @@ namespace devoUpdate {
     }
 
     private bool Launch( string args, OutputTo outputTo ) {
-      execProcess = new Process();
+      outputLog = "";
+
+      if( binary == null ) 
+        throw new Exception("Launch(): No executable set, forgot to call SetExecuteable()?");
 
       processStartInfo.FileName = binary;
       processStartInfo.Arguments = args;
       execProcess.StartInfo = processStartInfo;
 
-      if( outputTo == OutputTo.Log ) {
-        execProcess.OutputDataReceived += new DataReceivedEventHandler(OutputLogHandler);
-        execProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorLogHandler);
-      }
-      execProcess.Exited += p_Exited;
-
       try {
         execProcess.Start();
-        execProcess.EnableRaisingEvents = true;
       }
       catch( Exception ex ) {
-        MsgBox.error("Error starting process", ex);
+        MsgBox.error("Unable to start process for console output", ex);
         return false;
       }
 
       OnProcessStart?.Invoke(this, EventArgs.Empty);
 
-      enableConsoleUpdate = (outputTo == OutputTo.Console);
+      if (outputTo == OutputTo.Console) {
+        if( execProcess.StartInfo.RedirectStandardError ) {
+          stderrThread = new Thread(() => ThreadConsoleUpdate(execProcess.StandardError));
+          stderrThread.IsBackground = true;
+          stderrThread.Start();
+        }
+
+        if( execProcess.StartInfo.RedirectStandardOutput ) {
+          stdoutThread = new Thread(() => ThreadConsoleUpdate(execProcess.StandardOutput));
+          stdoutThread.IsBackground = true;
+          stdoutThread.Start();
+        }
+      }
 
       if( outputTo == OutputTo.Log ) {
+        execProcess.OutputDataReceived += new DataReceivedEventHandler(OutputLogHandler);
+        execProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorLogHandler);
         processOutputStreamOpen = true;
         processErrorStreamOpen = true;
         execProcess.BeginOutputReadLine();
@@ -118,30 +149,24 @@ namespace devoUpdate {
         ConsoleOutputCallback = CallbackFunction;
     }
 
-    // Progress bars don't work using async output, since it only fires when a new line is received
-    // Problem: Slow if the process outputs a lot of text
-    private void tConsoleUpdate() {
-      while( true ) {
-        Thread.Sleep(15);
+    private const int OUTPUT_BUFFER_SIZE = 256;
+    private void ThreadConsoleUpdate(StreamReader sr) {
+      try {
+        while ( execProcess != null ) {
+          char[] buffer = new char[OUTPUT_BUFFER_SIZE];
 
-        if( !enableConsoleUpdate )
-          continue;
+          if( sr.Read(buffer, 0, buffer.Length) > 0 ) {
+            string s = new string(buffer);
 
-        try {
-          if( execProcess != null ) {
-            char[] buff = new char[256];
-
-            // TODO: read from stdError AND stdOut (AVRDUDE outputs stuff through stdError)
-            if( execProcess.StandardError.Read(buff, 0, buff.Length) > 0 ) {
-              string s = new string(buff);
-
-              ConsoleOutputCallback(s);
-            }
+            ConsoleOutputCallback(s);
+          } else {
+            // END OF FILE
+            break;
           }
         }
-        catch( Exception e ) {
-          // TODO: handle these errors properly
-        }
+      }
+      catch( Exception e ) {
+        Console.WriteLine("ThreadConsoleUpdate(); Exception caught:" + e.Message + "\nStack Trace:" + e.StackTrace);
       }
     }
 
@@ -161,6 +186,46 @@ namespace devoUpdate {
 
     private void ErrorLogHandler( object sender, DataReceivedEventArgs e ) {
       processErrorStreamOpen = Logger(e.Data);
+    }
+
+    private void CheckForValidProcess( string errorTextMessage, bool checkForHasExited ) {
+      errorTextMessage = (errorTextMessage == null) ? "" : errorTextMessage.Trim();
+      if( execProcess == null )
+        throw new Exception("CheckForValidProcess(); The executable Process is not available. " + errorTextMessage);
+
+      if( checkForHasExited && execProcess.HasExited )
+        throw new Exception("CheckForValidProcess(); The executable Process has exited. " + errorTextMessage);
+    }
+
+    protected void WaitForExit() {
+      try {
+        CheckForValidProcess("Unable to start executable process.", true /*CheckForHasExited*/);
+        execProcess.WaitForExit();
+      } catch(Exception e) {
+        Console.WriteLine("WaitForExit(); Process Exception caught: " + e.Message + "\nStack Trace:" + e.StackTrace);
+      }
+
+      // There might still be data in a buffer somewhere that needs to be read by the
+      // output handler even after the process has ended.
+      try {
+        stderrThread.Join();
+        stdoutThread.Join();
+      } catch (Exception e) {
+        Console.WriteLine("WaitForExit(); Thread Exception caught: " + e.Message + "\nStack Trace:" + e.StackTrace);
+      }
+    }
+
+    protected bool SetExecutable(string binaryName, string directory) {
+      if( binaryName.Length == 0)
+        return false;
+
+      binary = SearchForBinary(binaryName, directory);
+      if( binary == null ) {
+        MsgBox.error(binaryName + " is missing!");
+        throw new System.IO.FileNotFoundException("File does not exist: ", binaryName);
+      }
+
+      return true;
     }
 
     private string SearchForBinary( string binaryName, string directory ) {
