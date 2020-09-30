@@ -32,7 +32,6 @@ namespace devoUpdate {
     }
 
     protected void load( string binaryName, string directory, bool enableConsoleWrite = true ) {
-
       binary = searchForBinary(binaryName, directory);
       processStartInfo = new ProcessStartInfo {
         FileName = "",
@@ -191,8 +190,7 @@ namespace devoUpdate {
 
     // These methods are needed to properly capture the process output for logging
     private bool logger( string s ) {
-      if( s != null ) // A null is sent when the stream is closed
-      {
+      if( s != null ) { // A null is sent when the stream is closed
         outputLog += s.Replace("\0", String.Empty) + Environment.NewLine;
         return true;
       }
