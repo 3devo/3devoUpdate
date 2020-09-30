@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace devoUpdate {
   abstract class Executable {
-    private Process p;
+    private Process execProcess = new Process();
     private Action<object> onFinish;
     private object param;
     public event EventHandler OnProcessStart;
@@ -99,22 +99,21 @@ namespace devoUpdate {
     }
 
     private bool launch( string args, OutputTo outputTo ) {
-      Process tmp = new Process();
-      tmp.StartInfo.FileName = binary;
-      tmp.StartInfo.Arguments = args;
-      tmp.StartInfo.CreateNoWindow = true;
-      tmp.StartInfo.UseShellExecute = false;
-      tmp.StartInfo.RedirectStandardOutput = true;
-      tmp.StartInfo.RedirectStandardError = true;
-      tmp.EnableRaisingEvents = true;
+      execProcess.StartInfo.FileName = binary;
+      execProcess.StartInfo.Arguments = args;
+      execProcess.StartInfo.CreateNoWindow = true;
+      execProcess.StartInfo.UseShellExecute = false;
+      execProcess.StartInfo.RedirectStandardOutput = true;
+      execProcess.StartInfo.RedirectStandardError = true;
+      execProcess.EnableRaisingEvents = true;
       if( outputTo == OutputTo.Log ) {
-        tmp.OutputDataReceived += new DataReceivedEventHandler(outputLogHandler);
-        tmp.ErrorDataReceived += new DataReceivedEventHandler(errorLogHandler);
+        execProcess.OutputDataReceived += new DataReceivedEventHandler(outputLogHandler);
+        execProcess.ErrorDataReceived += new DataReceivedEventHandler(errorLogHandler);
       }
-      tmp.Exited += new EventHandler(p_Exited);
+      execProcess.Exited += p_Exited;
 
       try {
-        tmp.Start();
+        execProcess.Start();
       }
       catch( Exception ex ) {
         MsgBox.error("Error starting process", ex);
@@ -125,13 +124,12 @@ namespace devoUpdate {
         OnProcessStart(this, EventArgs.Empty);
 
       enableConsoleUpdate = (outputTo == OutputTo.Console);
-      p = tmp;
 
       if( outputTo == OutputTo.Log ) {
         processOutputStreamOpen = true;
         processErrorStreamOpen = true;
-        p.BeginOutputReadLine();
-        p.BeginErrorReadLine();
+        execProcess.BeginOutputReadLine();
+        execProcess.BeginErrorReadLine();
       } else {
         processOutputStreamOpen = false;
         processErrorStreamOpen = false;
@@ -164,11 +162,11 @@ namespace devoUpdate {
           continue;
 
         try {
-          if( p != null ) {
+          if( execProcess != null ) {
             char[] buff = new char[256];
 
             // TODO: read from stdError AND stdOut (AVRDUDE outputs stuff through stdError)
-            if( p.StandardError.Read(buff, 0, buff.Length) > 0 ) {
+            if( execProcess.StandardError.Read(buff, 0, buff.Length) > 0 ) {
               string s = new string(buff);
 
               ConsoleOutputCallback(s);
@@ -201,19 +199,19 @@ namespace devoUpdate {
     }
 
     protected bool isActive() {
-      return (p != null && !p.HasExited);
+      return (execProcess != null && !execProcess.HasExited);
     }
 
     public bool kill() {
       if( !isActive() )
         return false;
-      p.Kill();
+      execProcess.Kill();
       return true;
     }
 
     protected void waitForExit() {
       if( isActive() )
-        p.WaitForExit();
+        execProcess.WaitForExit();
 
       // There might still be data in a buffer somewhere that needs to be read by the output handler even after the process has ended
       while( processOutputStreamOpen && processErrorStreamOpen )
