@@ -13,7 +13,8 @@ using System.Threading;
 
 namespace devoUpdate {
   abstract class Executable {
-    private Process execProcess = new Process();
+    private ProcessStartInfo processStartInfo;
+    private Process execProcess;
     private Action<object> onFinish;
     private object param;
     public event EventHandler OnProcessStart;
@@ -33,6 +34,15 @@ namespace devoUpdate {
     protected void load( string binaryName, string directory, bool enableConsoleWrite = true ) {
 
       binary = searchForBinary(binaryName, directory);
+      processStartInfo = new ProcessStartInfo {
+        FileName = "",
+        Arguments = "",
+        CreateNoWindow = true,
+        UseShellExecute = false,
+        ErrorDialog = false,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+      };
 
       if( binary == null )
         MsgBox.error(binaryName + " is missing!");
@@ -99,13 +109,12 @@ namespace devoUpdate {
     }
 
     private bool launch( string args, OutputTo outputTo ) {
-      execProcess.StartInfo.FileName = binary;
-      execProcess.StartInfo.Arguments = args;
-      execProcess.StartInfo.CreateNoWindow = true;
-      execProcess.StartInfo.UseShellExecute = false;
-      execProcess.StartInfo.RedirectStandardOutput = true;
-      execProcess.StartInfo.RedirectStandardError = true;
-      execProcess.EnableRaisingEvents = true;
+      execProcess = new Process();
+
+      processStartInfo.FileName = binary;
+      processStartInfo.Arguments = args;
+      execProcess.StartInfo = processStartInfo;
+
       if( outputTo == OutputTo.Log ) {
         execProcess.OutputDataReceived += new DataReceivedEventHandler(outputLogHandler);
         execProcess.ErrorDataReceived += new DataReceivedEventHandler(errorLogHandler);
@@ -114,6 +123,7 @@ namespace devoUpdate {
 
       try {
         execProcess.Start();
+        execProcess.EnableRaisingEvents = true;
       }
       catch( Exception ex ) {
         MsgBox.error("Error starting process", ex);
