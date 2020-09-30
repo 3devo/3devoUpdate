@@ -129,8 +129,7 @@ namespace devoUpdate {
         return false;
       }
 
-      if( OnProcessStart != null )
-        OnProcessStart(this, EventArgs.Empty);
+      OnProcessStart?.Invoke(this, EventArgs.Empty);
 
       enableConsoleUpdate = (outputTo == OutputTo.Console);
 
@@ -148,11 +147,9 @@ namespace devoUpdate {
     }
 
     private void p_Exited( object sender, EventArgs e ) {
-      if( OnProcessEnd != null )
-        OnProcessEnd(this, EventArgs.Empty);
+      OnProcessEnd?.Invoke(this, EventArgs.Empty);
 
-      if( onFinish != null )
-        onFinish(param);
+      onFinish?.Invoke(param);
       onFinish = null;
     }
 
