@@ -53,10 +53,6 @@ namespace devoUpdate {
     }
 
     protected bool launch( string args, Action<object> onFinish, object param, OutputTo outputTo ) {
-      // Another process is active
-      if( isActive() )
-        return false;
-
       // Clear log
       outputLog = "";
       Util.consoleClear();
@@ -165,26 +161,6 @@ namespace devoUpdate {
 
     private void errorLogHandler( object sender, DataReceivedEventArgs e ) {
       processErrorStreamOpen = logger(e.Data);
-    }
-
-    protected bool isActive() {
-      return (execProcess != null && !execProcess.HasExited);
-    }
-
-    public bool kill() {
-      if( !isActive() )
-        return false;
-      execProcess.Kill();
-      return true;
-    }
-
-    protected void waitForExit() {
-      if( isActive() )
-        execProcess.WaitForExit();
-
-      // There might still be data in a buffer somewhere that needs to be read by the output handler even after the process has ended
-      while( processOutputStreamOpen && processErrorStreamOpen )
-        Thread.Sleep(15);
     }
 
     private string searchForBinary( string binaryName, string directory ) {
