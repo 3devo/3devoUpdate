@@ -52,42 +52,6 @@ namespace devoUpdate {
       }
     }
 
-    private string searchForBinary( string binaryName, string directory ) {
-      PlatformID os = Environment.OSVersion.Platform;
-      if( os != PlatformID.MacOSX && os != PlatformID.Unix )
-        binaryName += ".exe";
-
-      string app;
-
-      // Check user defined directory
-      if( !String.IsNullOrEmpty(directory) ) {
-        app = Path.Combine(directory, binaryName);
-        if( File.Exists(app) )
-          return app;
-        return null;
-      }
-
-      // File exists in application directory (mainly for Windows)
-      app = Path.Combine(AssemblyData.directory, binaryName);
-      if( File.Exists(app) )
-        return app;
-
-      // File exists in working directory
-      app = Path.Combine(Directory.GetCurrentDirectory(), binaryName);
-      if( File.Exists(app) )
-        return app;
-
-      // Search PATHs
-      string[] paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries);
-      foreach( string path in paths ) {
-        app = Path.Combine(path, binaryName);
-        if( File.Exists(app) )
-          return app;
-      }
-
-      return null;
-    }
-
     protected bool launch( string args, Action<object> onFinish, object param, OutputTo outputTo ) {
       // Another process is active
       if( isActive() )
@@ -221,6 +185,42 @@ namespace devoUpdate {
       // There might still be data in a buffer somewhere that needs to be read by the output handler even after the process has ended
       while( processOutputStreamOpen && processErrorStreamOpen )
         Thread.Sleep(15);
+    }
+
+    private string searchForBinary( string binaryName, string directory ) {
+      PlatformID os = Environment.OSVersion.Platform;
+      if( os != PlatformID.MacOSX && os != PlatformID.Unix )
+        binaryName += ".exe";
+
+      string app;
+
+      // Check user defined directory
+      if( !String.IsNullOrEmpty(directory) ) {
+        app = Path.Combine(directory, binaryName);
+        if( File.Exists(app) )
+          return app;
+        return null;
+      }
+
+      // File exists in application directory (mainly for Windows)
+      app = Path.Combine(AssemblyData.directory, binaryName);
+      if( File.Exists(app) )
+        return app;
+
+      // File exists in working directory
+      app = Path.Combine(Directory.GetCurrentDirectory(), binaryName);
+      if( File.Exists(app) )
+        return app;
+
+      // Search PATHs
+      string[] paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries);
+      foreach( string path in paths ) {
+        app = Path.Combine(path, binaryName);
+        if( File.Exists(app) )
+          return app;
+      }
+
+      return null;
     }
   }
 }
