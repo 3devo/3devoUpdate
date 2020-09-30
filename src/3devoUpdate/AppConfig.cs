@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Xml.Serialization;
 
       //public int Revision;
-namespace avrdudess {
+namespace devoUpdate {
   // Contains all configuration stuff
   [XmlType(TypeName = "ConfigData")] // For backwards compatability with old (<v2.2) config.xml
   public sealed partial class Config {

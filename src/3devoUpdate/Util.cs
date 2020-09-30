@@ -19,7 +19,7 @@ namespace System.Runtime.CompilerServices {
   public sealed class ExtensionAttribute : Attribute { }
 }
 
-namespace avrdudess {
+namespace devoUpdate {
   // Action without parameters doesn't seem to be a thing in .NET 2.0
   public delegate void Action();
 

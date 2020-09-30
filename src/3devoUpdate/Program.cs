@@ -8,9 +8,8 @@
 
 using System;
 using System.Windows.Forms;
-using devoUpdate;
 
-namespace avrdudess {
+namespace devoUpdate {
   static class Constants {
     public const bool DEBUG_STATUS = false;
   }

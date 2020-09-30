@@ -57,7 +57,7 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>avrdudess.Program</StartupObject>
+    <StartupObject>devoUpdate.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>3d_fav_icon.ico</ApplicationIcon>

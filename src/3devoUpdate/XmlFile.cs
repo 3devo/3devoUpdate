@@ -10,7 +10,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace avrdudess {
+namespace devoUpdate {
   public abstract class XmlFile<T> {
     protected string fileLocation { get; private set; }
     private string name;

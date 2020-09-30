@@ -8,8 +8,9 @@
 
 using System;
 using System.IO;
+using avrdudess;
 
-namespace avrdudess {
+namespace devoUpdate {
   // http://stackoverflow.com/questions/453161/best-practice-to-save-application-settings-in-a-windows-forms-application
   // http://stackoverflow.com/questions/401232/static-indexers
 

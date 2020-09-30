@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace avrdudess {
+namespace devoUpdate {
   abstract class Executable {
     private Process p;
     private Action<object> onFinish;

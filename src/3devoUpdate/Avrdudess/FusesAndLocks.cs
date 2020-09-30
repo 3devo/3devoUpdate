@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Xml;
+using devoUpdate;
 
 namespace avrdudess {
   sealed class FusesList : XmlFile<object> {

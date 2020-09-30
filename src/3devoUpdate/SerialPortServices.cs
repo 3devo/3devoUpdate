@@ -6,8 +6,9 @@ using System.IO.Ports;
 using System.Management;
 using System.Threading;
 using System.Timers;
+using ManagementException = avrdudess.ManagementException;
 
-namespace avrdudess {
+namespace devoUpdate {
   public static class SerialPortService {
     private static string[] serial_ports;
     private static ManagementEventWatcher arrival;
