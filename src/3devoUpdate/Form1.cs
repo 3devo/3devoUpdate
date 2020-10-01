@@ -145,7 +145,12 @@ namespace devoUpdate {
     }
 
     private void Application_OnProcessEnd( object sender, EventArgs e ) {
-      Util.InvokeIfRequired(this, c => { UpdateInterface(); });
+      // Update the devicelist manually this time in case we missed some insert/removal events.
+      Util.InvokeIfRequired(this, c => { UpdateDeviceList(); });
+      
+      // Enable the PortChanged event again after uploading is finished.
+      SerialPortService.PortsChanged += Portchanged_event;
+
       tssStatus.Text = "Ready";
     }
 
@@ -215,6 +220,8 @@ namespace devoUpdate {
     private void UpdateInterface() {
       // Clear status info text
       txtStatusInfo.Clear();
+
+      cmbPort.Enabled = true;
 
       // No devices connected/found
       if( cmbPort.Items.Count == 0 ) {
@@ -317,8 +324,20 @@ namespace devoUpdate {
 
     private void BtnUpload_Click( object sender, EventArgs e ) {
       if( downloadIsReady ) {
-        StartUploadProcess();
         downloadIsReady = false;
+
+        // Disable all GUI components during the upload process
+        btnUpload.Enabled = false;
+        btnFlashBrowse.Enabled = false;
+        cmbPort.Enabled = false;
+
+        // Disable the PortsChanged eventhandler to prevent multiple insertion/removal events of devices.
+        // This is caused by the selected download device, which will reset during the upload process and
+        // continue on in bootloader mode. This resetting behaviour causes multiple events and refreshed
+        // the devicelist again, which is not necessary at the moment of downloading.
+        SerialPortService.PortsChanged -= Portchanged_event;
+
+        StartUploadProcess();
       } else {
         Console.Error.Write("Could not perform upload operation, no file or machine selected yet.");
       }
