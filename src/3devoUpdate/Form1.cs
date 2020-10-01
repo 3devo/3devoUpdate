@@ -28,6 +28,7 @@ namespace devoUpdate {
     private bool downloadFileSelected = false;
     private Point dragStart;
     private EventHandler combobox_selectedIndexChangedHandler;
+    private EventHandler<PortsChangedArgs> Portchanged_event;
 
     #region Control getters and setters
 
@@ -105,7 +106,8 @@ namespace devoUpdate {
 
       // Update serial ports etc
       UpdateDeviceList();
-      SerialPortService.PortsChanged += ( sender1, changedArgs ) => UpdateDeviceList();
+      Portchanged_event = ( sender1, changedArgs ) => UpdateDeviceList();
+      SerialPortService.PortsChanged += Portchanged_event;
       combobox_selectedIndexChangedHandler = new System.EventHandler(this.CmbPort_SelectedIndexChanged);
       cmbPort.SelectedIndexChanged += combobox_selectedIndexChangedHandler;
       cmbPort.DropDownClosed += new System.EventHandler(this.CmbPort_DropDownClosed);
