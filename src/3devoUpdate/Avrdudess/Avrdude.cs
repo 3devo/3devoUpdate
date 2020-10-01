@@ -114,7 +114,7 @@ namespace avrdudess {
       _mcus.Insert(0, new MCU("", "Select an MCU..."));
     }
 
-    public void ConsoleOutputHandler(string outputInfo) {
+    public void ConsoleOutputHandler( string outputInfo ) {
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
         System.Diagnostics.Debug.Write(outputInfo);
