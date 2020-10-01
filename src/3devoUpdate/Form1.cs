@@ -248,7 +248,7 @@ namespace devoUpdate {
       switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
         case USBDeviceList.MachineType.FilamentMaker:
           avrCmdLine.generate();
-          avrdude.Launch(avrCmdLine.cmdBox);
+          avrdude.Launch(avrCmdLine.cmdBox, Avrdude.CommandType.FILE_UPLOAD);
           break;
         case USBDeviceList.MachineType.StBootloader: // Fall through
         case USBDeviceList.MachineType.AiridDryer:

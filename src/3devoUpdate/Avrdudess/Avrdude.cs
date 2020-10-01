@@ -24,6 +24,13 @@ namespace avrdudess {
     private const string FILE_AVRDUDE = "avrdude";
     private const string FILE_AVRDUDECONF = "avrdude.conf";
 
+    public enum CommandType : int {
+      NONE = 0,
+      GET_VERSION,
+      FILE_UPLOAD,
+      DETECT_MCU,
+    }
+
     public class UsbAspFreq {
       public string name { get; private set; }
       public string bitClock { get; private set; }
@@ -78,7 +85,17 @@ namespace avrdudess {
     public event EventHandler OnVersionChange;
     public event EventHandler<DetectedMCUEventArgs> OnDetectedMCU;
 
+    private CommandType commandTypeAvr;
+
     #region Getters and setters
+
+    public CommandType GetCommandType() {
+      return commandTypeAvr;
+    }
+
+    public void SetCommandType( CommandType value ) {
+      commandTypeAvr = value;
+    }
 
     public List<Programmer> programmers {
       get { return _programmers; }
@@ -99,6 +116,7 @@ namespace avrdudess {
       base.SetExecutable(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
       version = "";
+      commandTypeAvr = CommandType.NONE;
 
       _programmers.Clear();
       _mcus.Clear();
@@ -120,73 +138,85 @@ namespace avrdudess {
         System.Diagnostics.Debug.Write(outputInfo);
       }
 
-      // Connection problem occured 
-      if( outputInfo.Contains("ser_open():")
-              || outputInfo.Contains("stk500")
-              || outputInfo.Contains("ser_send()")
-              || outputInfo.Contains("can't open device")
-          ) {
-        Util.consoleClear();
-        Util.consoleWrite("Connection problem...\n");
-        Util.consoleWrite("\n");
-        Util.consoleWrite("Possible problems:\n");
-        Util.consoleWrite("  - Usb cable is disconnected.\n");
-        Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
-        Util.consoleWrite("  - Not properly working usb cable.\n");
-        Util.consoleWrite("\n");
-        Util.consoleWrite("Before contacting service:\n");
-        Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
-        Util.consoleWrite("  - Try to upload again.\n");
-        Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
-        Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
-        upload_status = 0;
-      }
+      switch( commandTypeAvr ) {
+        case CommandType.FILE_UPLOAD:
+          // Connection problem occured 
+          if( outputInfo.Contains("ser_open():")
+                  || outputInfo.Contains("stk500")
+                  || outputInfo.Contains("ser_send()")
+                  || outputInfo.Contains("can't open device")
+              ) {
+            Util.consoleClear();
+            Util.consoleWrite("Connection problem...\n");
+            Util.consoleWrite("\n");
+            Util.consoleWrite("Possible problems:\n");
+            Util.consoleWrite("  - Usb cable is disconnected.\n");
+            Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
+            Util.consoleWrite("  - Not properly working usb cable.\n");
+            Util.consoleWrite("\n");
+            Util.consoleWrite("Before contacting service:\n");
+            Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
+            Util.consoleWrite("  - Try to upload again.\n");
+            Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
+            Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
+            upload_status = 0;
+          }
 
-      /* To do: more specific problem handling
-      // COM port conection failed
-      if (s.Contains("can't open device"))
-      {
-          Util.consoleWrite("\tIs the filament extruder still connected?\n");
-          Util.consoleWrite("\tYes? Disconnect and reconnect the filament extruder.\n");
-          Util.consoleWrite("\tTry to upload again..\n");
-          Util.consoleWrite("\tIf it keeps on happening, contact service support..\n");
-          upload_status = 0;
-      }
+          /* To do: more specific problem handling
+          // COM port conection failed
+          if (s.Contains("can't open device"))
+          {
+              Util.consoleWrite("\tIs the filament extruder still connected?\n");
+              Util.consoleWrite("\tYes? Disconnect and reconnect the filament extruder.\n");
+              Util.consoleWrite("\tTry to upload again..\n");
+              Util.consoleWrite("\tIf it keeps on happening, contact service support..\n");
+              upload_status = 0;
+          }
 
-      // COM port conection failed
-      if (s.Contains("programmer is not responding"))
-      {
-          Util.consoleWrite("\tProgrammer is not responding..\n\n");
-          Util.consoleWrite("\tPossible problem is a not properly working usb cable..\n\n");
-          Util.consoleWrite("\tNeed help? Contact service for more support..\n");
-          upload_status = 0;
-      }
-      */
+          // COM port conection failed
+          if (s.Contains("programmer is not responding"))
+          {
+              Util.consoleWrite("\tProgrammer is not responding..\n\n");
+              Util.consoleWrite("\tPossible problem is a not properly working usb cable..\n\n");
+              Util.consoleWrite("\tNeed help? Contact service for more support..\n");
+              upload_status = 0;
+          }
+          */
 
-      // Writing selected file
-      if( outputInfo.Contains("Writing |") ) {
-        Util.consoleWrite("Uploading file: |");
-        upload_status = 1;
-      }
+          // Writing selected file
+          if( upload_status == 0 ) {
+            if( outputInfo.Contains("Writing |") ) {
+              Util.consoleWrite("Uploading file: |");
+              upload_status = 1;
+            }
+          }
 
-      if( upload_status == 1 ) {
-        if ( (outputInfo.Contains("#")) )
-          Util.consoleWrite("#");
+          if( upload_status == 1 ) {
+            if( outputInfo.Contains("#") )
+              Util.consoleWrite("#");
 
-        if( (outputInfo.Contains("| 100%")) )
-          upload_status = 2;
-      }
+            if( outputInfo.Contains("| 100%") )
+              upload_status = 2;
+          }
 
-      // Uploading was succesful
-      if( outputInfo.Contains("avrdude.exe done.  Thank you.") && (upload_status == 2) ) {
-        Util.consoleWrite("File upload was successful!");
-        upload_status = 3;
+          if( outputInfo.Contains("avrdude.exe done. Thank you.") && (upload_status == 2) ) {
+            Util.consoleWrite("File upload was successful!");
+            upload_status = 3;
 
-        // Debug info
-        if( Constants.DEBUG_STATUS == true ) {
-          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
-          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n");
-        }
+            // Debug info
+            if( Constants.DEBUG_STATUS == true ) {
+              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
+              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n");
+            }
+          }
+          break;
+        case CommandType.GET_VERSION:
+        case CommandType.DETECT_MCU:
+          // Do nothing here, since we only want the whole output log
+          break;
+        case CommandType.NONE:
+          throw new System.InvalidOperationException();
+          break;
       }
     }
 
@@ -194,7 +224,7 @@ namespace avrdudess {
     private void GetVersion() {
       version = "";
 
-      Launch("", OutputTo.Log);
+      Launch("", CommandType.GET_VERSION, OutputTo.Log);
       WaitForExit();
 
       if( outputLog != null ) {
@@ -403,11 +433,13 @@ namespace avrdudess {
       base.Launch(args, onFinish, param, outputTo);
     }
 
-    public void Launch( string args, OutputTo outputTo = OutputTo.Console ) {
+    public void Launch( string args, CommandType commandType, OutputTo outputTo = OutputTo.Console ) {
+      SetCommandType(commandType);
       Launch(args, null, null, outputTo);
     }
 
     public void DetectMCU( string args ) {
+      SetCommandType(CommandType.DETECT_MCU);
       Launch(args, DetectComplete, null, OutputTo.Log);
     }
 
