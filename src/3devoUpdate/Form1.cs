@@ -95,8 +95,9 @@ namespace devoUpdate {
       ToolTips.ReshowDelay = 100;
       ToolTips.UseAnimation = false;
       ToolTips.UseFading = false;
-      ToolTips.SetToolTip(cmbPort, "Set COM port");
-      ToolTips.SetToolTip(txtFlashFile, "Hex file (.hex)" + Environment.NewLine + "You can also drag and drop files here");
+      ToolTips.SetToolTip(cmbPort, "Select your machine here first.");
+      ToolTips.SetToolTip(txtFlashFile, "File used to program your machine." + Environment.NewLine 
+        + "You can also drag and drop firmware files in here.");
       ToolTips.Active = Config.Prop.toolTips;
 
       downloadIsReady = false;
