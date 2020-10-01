@@ -103,7 +103,7 @@ namespace avrdudess {
       _programmers.Clear();
       _mcus.Clear();
 
-      loadConfig(Config.Prop.avrdudeConfLoc);
+      LoadConfig(Config.Prop.avrdudeConfLoc);
 
       // Sort alphabetically
       _programmers.Sort();
@@ -191,10 +191,10 @@ namespace avrdudess {
     }
 
     // Get AVRDUDE version
-    private void getVersion() {
+    private void GetVersion() {
       version = "";
 
-      launch("", OutputTo.Log);
+      Launch("", OutputTo.Log);
       WaitForExit();
 
       if( outputLog != null ) {
@@ -211,7 +211,7 @@ namespace avrdudess {
     }
 
     // Basic parsing of avrdude.conf to get programmers & MCUs
-    private void loadConfig( string confLoc ) {
+    private void LoadConfig( string confLoc ) {
       string conf_loc = null;
 
       if( !String.IsNullOrEmpty(confLoc) )
@@ -377,7 +377,7 @@ namespace avrdudess {
       }
     }
 
-    public new void launch( string args, Action<object> onFinish, object param, OutputTo outputTo = OutputTo.Console ) {
+    public new void Launch( string args, Action<object> onFinish, object param, OutputTo outputTo = OutputTo.Console ) {
       if( args.Trim().Length > 0 ) {
         // Add -u to command line (disables safe mode)
         args = "-u " + args;
@@ -403,16 +403,16 @@ namespace avrdudess {
       base.Launch(args, onFinish, param, outputTo);
     }
 
-    public void launch( string args, OutputTo outputTo = OutputTo.Console ) {
-      launch(args, null, null, outputTo);
+    public void Launch( string args, OutputTo outputTo = OutputTo.Console ) {
+      Launch(args, null, null, outputTo);
     }
 
-    public void detectMCU( string args ) {
-      launch(args, detectComplete, null, OutputTo.Log);
+    public void DetectMCU( string args ) {
+      Launch(args, DetectComplete, null, OutputTo.Log);
     }
 
     // Got MCU info
-    private void detectComplete( object param ) {
+    private void DetectComplete( object param ) {
       string log = outputLog.ToLower();
 
       // Look for string
