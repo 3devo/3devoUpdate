@@ -372,20 +372,20 @@ namespace devoUpdate {
         ComboboxDropdown_Handler();
     }
 
-    private static int PrevSelectionIndex = -1;
+    private static USBDeviceList.MachineType prevMachineType = USBDeviceList.MachineType.None;
     private void ComboboxDropdown_Handler() {
       downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
       deviceSelected = false;
       btnUpload.Enabled = false;
 
       if( cmbPort.SelectedIndex == -1 ) {
-        PrevSelectionIndex = -1;
         avrCmdLine.port = "";
       } else {
-        USBDeviceList usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
-
+        USBDeviceList usbDevice;
         try {
-          if( usbDevice.MachineName != DeviceInfoList.ElementAt(PrevSelectionIndex).MachineName ) {
+          usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
+
+          if( usbDevice.MachineName != prevMachineType ) {
             // Clear the file selection when another device type is selected.
             txtFlashFile.Text = "";
             downloadFileSelected = false;
@@ -414,7 +414,7 @@ namespace devoUpdate {
             break;
         }
 
-        PrevSelectionIndex = cmbPort.SelectedIndex;
+        prevMachineType = usbDevice.MachineName;
       }
 
       UpdateInterface();
