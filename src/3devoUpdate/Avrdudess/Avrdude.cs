@@ -405,6 +405,7 @@ namespace avrdudess {
       }
 
       upload_status = 0;
+      base.StartProcessesses();
       base.Launch(args, onFinish, param, outputTo);
     }
 
