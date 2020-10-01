@@ -100,7 +100,7 @@ namespace avrdudess {
       version = "";
     }
 
-    public void load() {
+    public void Init() {
       base.SetConsoleOutputHandler(ConsoleOutputHandler);
       base.SetExecutable(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 

@@ -70,6 +70,7 @@ namespace devoUpdate {
 
       avrCmdLine = new AvrCmdLine(this);
       avrdude = new Avrdude();
+      avrdude.Init();
 
       avrdude.OnProcessStart += Avrdude_OnProcessStart;
       avrdude.OnProcessEnd += Avrdude_OnProcessEnd;
@@ -247,7 +248,6 @@ namespace devoUpdate {
       switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
         case USBDeviceList.MachineType.FilamentMaker:
           avrCmdLine.generate();
-          avrdude.load();
           avrdude.launch(avrCmdLine.cmdBox);
           break;
         case USBDeviceList.MachineType.StBootloader: // Fall through
