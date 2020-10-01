@@ -21,6 +21,9 @@ namespace avrdudess {
     }
   }
   class Avrdude : Executable {
+    private const string FILE_AVRDUDE = "avrdude";
+    private const string FILE_AVRDUDECONF = "avrdude.conf";
+
     public class UsbAspFreq {
       public string name { get; private set; }
       public string bitClock { get; private set; }
@@ -32,9 +35,6 @@ namespace avrdudess {
         this.freq = freq;
       }
     }
-
-    private const string FILE_AVRDUDE = "avrdude";
-    private const string FILE_AVRDUDECONF = "avrdude.conf";
 
     public static readonly List<UsbAspFreq> USBaspFreqs = new List<UsbAspFreq>()
         {
