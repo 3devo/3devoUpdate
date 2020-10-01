@@ -64,6 +64,11 @@ namespace devoUpdate {
         System.Diagnostics.Debug.Write(outputInfo);
       }
 
+      // HACK: This method raises at a very fast pace during the download process, preventing the 
+      //       outputInfo text from being printed in the UI textbox. Adding a slight delay helps
+      //       to slow down the method handling a bit.
+      System.Threading.Thread.Sleep(1);
+
       switch( commandTypeDfu ) {
         case CommandType.FILE_UPLOAD:
           // Writing selected file
