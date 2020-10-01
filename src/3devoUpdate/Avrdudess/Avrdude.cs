@@ -236,8 +236,7 @@ namespace avrdudess {
         }
       }
 
-      if( OnVersionChange != null )
-        OnVersionChange(this, EventArgs.Empty);
+      OnVersionChange?.Invoke(this, EventArgs.Empty);
     }
 
     // Basic parsing of avrdude.conf to get programmers & MCUs
@@ -484,8 +483,7 @@ namespace avrdudess {
         }
       }
 
-      if( OnDetectedMCU != null )
-        OnDetectedMCU(this, new DetectedMCUEventArgs(null));
+      OnDetectedMCU?.Invoke(this, new DetectedMCUEventArgs(null));
     }
   }
 }
