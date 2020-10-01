@@ -432,7 +432,7 @@ namespace devoUpdate {
           }
         }
         catch( ArgumentOutOfRangeException ) {
-          // Check fails if the previous selection index is still negative, which is ok for the first time.
+          throw new ArgumentOutOfRangeException("ComboboxDropdown_Handler(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
         }
 
         switch( usbDevice.MachineName ) {
