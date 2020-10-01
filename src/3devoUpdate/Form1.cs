@@ -153,7 +153,17 @@ namespace devoUpdate {
       tssStatus.Text = "Upload process busy";
     }
 
+    private const int enumerateTimeout = 2000; // In milliseconds
     private void Application_OnProcessEnd( object sender, EventArgs e ) {
+      // Add a small delay here to give the board time to re-enumerate after the download process
+      // is finished.
+      // If the portChanged handler is raised too soon, the enumeration might still be going and
+      // show devices (such as the Airid mainboard) as ST generic device. This delay postpones 
+      System.Threading.Thread.Sleep(enumerateTimeout);
+
+      if (Constants.DEBUG_STATUS)
+        Console.WriteLine("Application_OnProcessEnd(); Postponing of Form process during enumeration is finished (delay expired).");
+
       // Update the devicelist manually this time in case we missed some insert/removal events.
       Util.InvokeIfRequired(this, c => { UpdateDeviceList(); });
       
