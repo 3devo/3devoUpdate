@@ -102,7 +102,7 @@ namespace avrdudess {
 
     public void load() {
       base.SetConsoleOutputHandler(ConsoleOutputHandler);
-      base.Load(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
+      base.SetExecutable(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
       getVersion();
 
