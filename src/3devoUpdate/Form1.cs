@@ -250,6 +250,14 @@ namespace devoUpdate {
         }
       }
 
+      // User warning when the machine is detected in bootloader mode.
+      if (bootloaderDevice == true) {
+        txtStatusInfo.AppendText("\r\nGeneric ST device selected;\n");
+        txtStatusInfo.AppendText("Carefully select the correct binary file for your machine, since we cannot determine which 3devo device is connected!\n");
+        txtStatusInfo.AppendText("Uploading the wrong firmware may cause hardware damage or the machine might stop responding.\n");
+        txtStatusInfo.AppendText("Only use this when recovering from a failed firmware update using the BOOT pin.\r\n");
+      }
+
       if( (deviceSelected == true)
           && (downloadFileSelected == true)
           && (!downloadIsReady) ) {
@@ -435,8 +443,6 @@ namespace devoUpdate {
             deviceSelected = true;
             break;
           case USBDeviceList.MachineType.StBootloader:
-            txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
-              + "binary file for your machine, since we cannot determine which 3devo device is connected!");
             dfuUtilCmdLine.LoadAiridDryerDefaults();
 
             dfuUtilCmdLine.vid = usbDevice.VendorId;
