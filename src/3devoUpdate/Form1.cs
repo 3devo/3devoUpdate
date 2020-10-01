@@ -99,8 +99,6 @@ namespace devoUpdate {
       ToolTips.SetToolTip(txtFlashFile, "Hex file (.hex)" + Environment.NewLine + "You can also drag and drop files here");
       ToolTips.Active = Config.Prop.toolTips;
 
-      // Load saved presets
-      avrCmdLine.LoadFilamentMakerDefaults();
       downloadIsReady = false;
       btnUpload.Enabled = false;
 
@@ -397,6 +395,8 @@ namespace devoUpdate {
 
         switch( usbDevice.MachineName ) {
           case USBDeviceList.MachineType.FilamentMaker:
+            avrCmdLine.LoadFilamentMakerDefaults();
+
             avrCmdLine.port = usbDevice.DeviceId; // COM number
             deviceSelected = true;
             break;
