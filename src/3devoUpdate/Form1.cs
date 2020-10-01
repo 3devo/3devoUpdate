@@ -199,12 +199,17 @@ namespace devoUpdate {
         DeviceCount += 1;
       }
 
-      if( this.cmbPort.Items.Count > 0 ) {
-        Util.InvokeIfRequired(this, c => { this.cmbPort.SelectedIndex = 0; });
-      }
-
-      // update status info text
-      Util.InvokeIfRequired(this, c => { UpdateInterface(); });
+      // Pre-select the first item in the list if only one device is selectable. Changing the selected index
+      // when no device is preselected raises the comboboxDropdown_Handler a second second time.
+      Util.InvokeIfRequired(this, c => {
+        if( this.cmbPort.Items.Count > 0 && this.cmbPort.SelectedIndex == -1 ) {
+          this.cmbPort.SelectedIndex = 0;
+        } else {
+          // Refresh the selected combobox index manually.
+          // Note that this assumes that the interface will also be refreshed in this handler.
+          ComboboxDropdown_Handler();
+        }
+      });
     }
 
     private void UpdateInterface() {
