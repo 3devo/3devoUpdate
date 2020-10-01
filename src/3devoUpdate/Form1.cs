@@ -141,6 +141,7 @@ namespace devoUpdate {
     #region Executable process events
 
     private void Application_OnProcessStart(object sender, EventArgs e) {
+      tssStatus.Text = "Upload process busy";
     }
 
     private void Application_OnProcessEnd( object sender, EventArgs e ) {
