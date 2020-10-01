@@ -23,8 +23,11 @@ namespace devoUpdate {
     private ToolTip ToolTips;
     private AvrCmdLine avrCmdLine;
     private Avrdude avrdude;
+    private DfuUtilCmdLine dfuUtilCmdLine;
+    private DfuUtil dfuUtil;
     private bool drag = false;
     private bool deviceSelected = false;
+    private bool bootloaderDevice = false;
     private bool downloadFileSelected = false;
     private Point dragStart;
     private EventHandler combobox_selectedIndexChangedHandler;
@@ -76,6 +79,12 @@ namespace devoUpdate {
       avrdude.OnProcessStart += Application_OnProcessStart;
       avrdude.OnProcessEnd += Application_OnProcessEnd;
 
+      dfuUtilCmdLine = new DfuUtilCmdLine(this);
+      dfuUtil = new DfuUtil();
+      dfuUtil.Init();
+
+      dfuUtil.OnProcessStart += Application_OnProcessStart;
+      dfuUtil.OnProcessEnd += Application_OnProcessEnd;
 
       // Setup memory files/usage bars
       EnableClientAreaDrag(Controls);
@@ -257,6 +266,8 @@ namespace devoUpdate {
           break;
         case USBDeviceList.MachineType.StBootloader: // Fall through
         case USBDeviceList.MachineType.AiridDryer:
+          dfuUtilCmdLine.Generate();
+          dfuUtil.Launch(dfuUtilCmdLine.command, DfuUtil.CommandType.FILE_UPLOAD);
           break;
         case USBDeviceList.MachineType.None:
         default:
@@ -393,10 +404,14 @@ namespace devoUpdate {
     private void ComboboxDropdown_Handler() {
       downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
       deviceSelected = false;
+      bootloaderDevice = false;
       btnUpload.Enabled = false;
 
       if( cmbPort.SelectedIndex == -1 ) {
         avrCmdLine.port = "";
+        dfuUtilCmdLine.vid = 0;
+        dfuUtilCmdLine.pid = 0;
+        dfuUtilCmdLine.serialNumber = 0;
       } else {
         USBDeviceList usbDevice;
         try {
@@ -422,14 +437,28 @@ namespace devoUpdate {
           case USBDeviceList.MachineType.StBootloader:
             txtStatusInfo.AppendText("Generic ST device selected; Carefully select the correct "
               + "binary file for your machine, since we cannot determine which 3devo device is connected!");
+            dfuUtilCmdLine.LoadAiridDryerDefaults();
+
+            dfuUtilCmdLine.vid = usbDevice.VendorId;
+            dfuUtilCmdLine.pid = usbDevice.ProductId;
+            dfuUtilCmdLine.serialNumber = usbDevice.SerialNumber;
+            bootloaderDevice = true;
             deviceSelected = true;
             break;
           case USBDeviceList.MachineType.AiridDryer:
+            dfuUtilCmdLine.LoadAiridDryerDefaults();
+
+            dfuUtilCmdLine.vid = usbDevice.VendorId;
+            dfuUtilCmdLine.pid = usbDevice.ProductId;
+            dfuUtilCmdLine.serialNumber = usbDevice.SerialNumber;
             deviceSelected = true;
             break;
           case USBDeviceList.MachineType.None:
           default:
             avrCmdLine.port = "";
+            dfuUtilCmdLine.vid = 0;
+            dfuUtilCmdLine.pid = 0;
+            dfuUtilCmdLine.serialNumber = 0;
             break;
         }
 
