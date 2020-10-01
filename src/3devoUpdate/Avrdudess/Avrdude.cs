@@ -104,7 +104,6 @@ namespace avrdudess {
       base.SetConsoleOutputHandler(ConsoleOutputHandler);
       base.SetExecutable(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
-      getVersion();
 
       _programmers.Clear();
       _mcus.Clear();
