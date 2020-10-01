@@ -72,8 +72,8 @@ namespace avrdudess {
 
     private UInt16 upload_status = 0;
 
-    private readonly List<Programmer> _programmers;
-    private readonly List<MCU> _mcus;
+    private readonly List<Programmer> _programmers = new List<Programmer>();
+    private readonly List<MCU> _mcus = new List<MCU>();
     public string version { get; private set; }
     public event EventHandler OnVersionChange;
     public event EventHandler<DetectedMCUEventArgs> OnDetectedMCU;
@@ -94,16 +94,11 @@ namespace avrdudess {
 
     #endregion
 
-    public Avrdude() {
-      _programmers = new List<Programmer>();
-      _mcus = new List<MCU>();
-      version = "";
-    }
-
     public void Init() {
       base.SetConsoleOutputHandler(ConsoleOutputHandler);
       base.SetExecutable(FILE_AVRDUDE, Config.Prop.avrdudeLoc);
 
+      version = "";
 
       _programmers.Clear();
       _mcus.Clear();
