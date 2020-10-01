@@ -201,7 +201,7 @@ namespace avrdudess {
       version = "";
 
       launch("", OutputTo.Log);
-      waitForExit();
+      WaitForExit();
 
       if( outputLog != null ) {
         string log = outputLog;
