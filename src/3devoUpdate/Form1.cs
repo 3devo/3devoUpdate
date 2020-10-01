@@ -115,7 +115,6 @@ namespace devoUpdate {
         combobox_selectedIndexChangedHandler(this, new EventArgs());
       }
 
-      // Debug info
       if( Constants.DEBUG_STATUS == true ) {
         System.Diagnostics.Debug.WriteLine("Ready: done initializing\n");
       }
@@ -138,7 +137,7 @@ namespace devoUpdate {
     }
     #endregion
 
-    #region Avrdude status
+    #region Executable process events
 
     private void Application_OnProcessStart(object sender, EventArgs e) {
     }
@@ -206,11 +205,6 @@ namespace devoUpdate {
       Util.InvokeIfRequired(this, c => { UpdateInterface(); });
     }
 
-    /* Update the statusinfo field
-     *  -  no filament extruder connected
-     *  -  com port selection
-     *  -  hex file set
-     */
     private void UpdateInterface() {
       // Clear status info text
       txtStatusInfo.Clear();
@@ -314,7 +308,6 @@ namespace devoUpdate {
       UpdateInterface();
     }
 
-    // Upload button
     private void BtnUpload_Click( object sender, EventArgs e ) {
       if( downloadIsReady ) {
         StartUploadProcess();
