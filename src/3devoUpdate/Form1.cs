@@ -73,8 +73,8 @@ namespace devoUpdate {
       avrdude = new Avrdude();
       avrdude.Init();
 
-      avrdude.OnProcessStart += Avrdude_OnProcessStart;
-      avrdude.OnProcessEnd += Avrdude_OnProcessEnd;
+      avrdude.OnProcessStart += Application_OnProcessStart;
+      avrdude.OnProcessEnd += Application_OnProcessEnd;
 
 
       // Setup memory files/usage bars
@@ -142,13 +142,10 @@ namespace devoUpdate {
 
     #region Avrdude status
 
-    // Avrdude process has started
-    private void Avrdude_OnProcessStart( object sender, EventArgs e ) {
-      tssStatus.Text = "Avrdude is running.";
+    private void Application_OnProcessStart(object sender, EventArgs e) {
     }
 
-    // Avrdude process has ended
-    private void Avrdude_OnProcessEnd( object sender, EventArgs e ) {
+    private void Application_OnProcessEnd( object sender, EventArgs e ) {
       Util.InvokeIfRequired(this, c => { UpdateInterface(); });
       tssStatus.Text = "Ready";
     }
