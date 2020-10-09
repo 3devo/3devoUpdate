@@ -32,10 +32,10 @@ namespace devoUpdate {
     private Point dragStart;
     private EventHandler combobox_selectedIndexChangedHandler;
     private EventHandler<PortsChangedArgs> Portchanged_event;
+    public List<USBDeviceList> DeviceInfoList;
 
     #region Control getters and setters
 
-    public List<USBDeviceList> DeviceInfoList;
     public string flashFile {
       get { return txtFlashFile.Text.Trim(); }
       set { txtFlashFile.Text = value; }
