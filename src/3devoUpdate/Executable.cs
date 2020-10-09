@@ -228,7 +228,7 @@ namespace devoUpdate {
       return true;
     }
 
-    private string SearchForBinary( string binaryName, string directory ) {
+    public string SearchForBinary( string binaryName, string directory ) {
       PlatformID os = Environment.OSVersion.Platform;
       if( os != PlatformID.MacOSX && os != PlatformID.Unix )
         binaryName += ".exe";
