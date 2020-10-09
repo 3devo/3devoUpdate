@@ -17,7 +17,7 @@ namespace devoUpdate {
   public partial class Form1 : Form {
     public bool downloadIsReady = false;
     private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
-    private const string HEX_FILE_NOT_SELECTED = "No hex file selected.\n";
+    private const string FILE_NOT_SELECTED = "No file selected.\n";
     private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
     private const string READY_FOR_UPLOADING = "Ready for uploading!\n";
     private ToolTip ToolTips;
@@ -254,7 +254,7 @@ namespace devoUpdate {
         if( deviceSelected == false ) {
           txtStatusInfo.AppendText(PORT_NOT_SELECTED);
         } else if( flashFile.Length == 0 ) {
-          txtStatusInfo.AppendText(HEX_FILE_NOT_SELECTED);
+          txtStatusInfo.AppendText(FILE_NOT_SELECTED);
         } else {
           txtStatusInfo.AppendText(READY_FOR_UPLOADING);
         }
