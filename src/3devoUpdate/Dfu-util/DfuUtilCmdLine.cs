@@ -29,14 +29,13 @@ namespace devoUpdate {
     public void Generate() {
       ClearCommandlineOptions();
 
-      if ( vid > 0 && pid > 0 )
-        CmdLineOption("d", String.Format(new BinaryFormatter(), "{0:H}:{1:H}", vid, pid) );
-
+      // Dfu-Util doesn't look in the DfuSe file for the correct alternate setting number, so
+      // for now we just add the alternate setting number to the parameters.
       if ( alternateInterfaceNr != -1)
         CmdLineOption("a", alternateInterfaceNr.ToString() );
 
-      CmdLineOption("s", "0x" + String.Format(new BinaryFormatter(), "{0:H}", dfuseAddress).PadLeft(8, '0') );
-      CmdLineOptionAppend(":" + dfuseCommandOptions.option);
+      // Go out of the bootloader when finished.
+      CmdLineOption("s", ":leave");
 
       // The BinaryFormatter method also pads the zero numbers at the start of the 
       // string (actually the end of the byte order), it is therefore necessary to
