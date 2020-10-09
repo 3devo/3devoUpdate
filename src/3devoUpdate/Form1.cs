@@ -161,7 +161,7 @@ namespace devoUpdate {
       // show devices (such as the Airid mainboard) as ST generic device. This delay postpones 
       System.Threading.Thread.Sleep(enumerateTimeout);
 
-      if (Constants.DEBUG_STATUS)
+      if( Constants.DEBUG_STATUS )
         Console.WriteLine("Application_OnProcessEnd(); Postponing of Form process during enumeration is finished (delay expired).");
 
       // Enable the PortChanged event again after uploading is finished.
