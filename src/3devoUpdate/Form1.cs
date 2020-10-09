@@ -310,10 +310,6 @@ namespace devoUpdate {
         txtFlashFile.Text = files[0];
     }
 
-    // FlashFile is changed event
-    private void FlashFile_Changed( object sender, EventArgs e ) {
-    }
-
     // Browse for flash file
     private void BtnFlashBrowse_Click( object sender, EventArgs e ) {
       downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.

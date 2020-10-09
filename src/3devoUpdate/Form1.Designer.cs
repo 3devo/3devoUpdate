@@ -114,7 +114,6 @@
       this.txtFlashFile.ReadOnly = true;
       this.txtFlashFile.Size = new System.Drawing.Size(418, 22);
       this.txtFlashFile.TabIndex = 6;
-      this.txtFlashFile.TextChanged += new System.EventHandler(this.FlashFile_Changed);
       // 
       // btnFlashBrowse
       // 
