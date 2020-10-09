@@ -164,11 +164,11 @@ namespace devoUpdate {
       if (Constants.DEBUG_STATUS)
         Console.WriteLine("Application_OnProcessEnd(); Postponing of Form process during enumeration is finished (delay expired).");
 
-      // Update the devicelist manually this time in case we missed some insert/removal events.
-      Util.InvokeIfRequired(this, c => { UpdateDeviceList(); });
-      
       // Enable the PortChanged event again after uploading is finished.
       SerialPortService.PortsChanged += Portchanged_event;
+
+      // Update the devicelist manually this time in case we missed some insert/removal events.
+      Util.InvokeIfRequired(this, c => { UpdateDeviceList(); });
 
       tssStatus.Text = "Ready";
     }
