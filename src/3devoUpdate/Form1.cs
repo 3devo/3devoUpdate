@@ -183,6 +183,8 @@ namespace devoUpdate {
      * Code derived from: https://stackoverflow.com/questions/3331043/get-list-of-connected-usb-devices
      */
     private void UpdateDeviceList() {
+      DisableInterface();
+
       DeviceInfoList.Clear();
 
       Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Clear(); });
@@ -233,6 +235,24 @@ namespace devoUpdate {
           // Note that this assumes that the interface will also be refreshed in this handler.
           ComboboxDropdown_Handler();
         }
+      });
+    }
+
+    private void EnableInterface(bool enableUpload = true) {
+      Util.InvokeIfRequired(this, c => {
+        if( enableUpload )
+          btnUpload.Enabled = true;
+
+        btnFlashBrowse.Enabled = true;
+        cmbPort.Enabled = true;
+      });
+    }
+
+    private void DisableInterface() {
+      Util.InvokeIfRequired(this, c => {
+        btnUpload.Enabled = false;
+        btnFlashBrowse.Enabled = false;
+        cmbPort.Enabled = false;
       });
     }
 
@@ -351,16 +371,13 @@ namespace devoUpdate {
       if( downloadIsReady ) {
         downloadIsReady = false;
 
-        // Disable all GUI components during the upload process
-        btnUpload.Enabled = false;
-        btnFlashBrowse.Enabled = false;
-        cmbPort.Enabled = false;
-
         // Disable the PortsChanged eventhandler to prevent multiple insertion/removal events of devices.
         // This is caused by the selected download device, which will reset during the upload process and
         // continue on in bootloader mode. This resetting behaviour causes multiple events and refreshed
         // the devicelist again, which is not necessary at the moment of downloading.
         SerialPortService.PortsChanged -= Portchanged_event;
+
+        DisableInterface();
 
         StartUploadProcess();
       } else {
