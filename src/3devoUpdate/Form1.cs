@@ -335,21 +335,27 @@ namespace devoUpdate {
       downloadIsReady = false; // Something has changed in the selection, so let's check if everything is ok later on.
       btnUpload.Enabled = false;
 
-      //openFileDialog1.Filter += "|All files (*.*)|*.*"; // Probably not a necessary option.
-      switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
-        case USBDeviceList.MachineType.FilamentMaker:
-          openFileDialog1.Title = "Select Filemant Maker or Filament Extruder firmware";
-          openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
-          break;
-        case USBDeviceList.MachineType.StBootloader:
-        case USBDeviceList.MachineType.AiridDryer:
-          openFileDialog1.Title = "Select Airid Dryer firmware";
-          openFileDialog1.Filter = "Binary files (*.bin)|*.bin";
-          break;
-        case USBDeviceList.MachineType.None:
-        default:
-          // TODO: Error unsupported model.
-          break;
+      try {
+        //openFileDialog1.Filter += "|All files (*.*)|*.*"; // Probably not a necessary option.
+        switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+          case USBDeviceList.MachineType.FilamentMaker:
+            openFileDialog1.Title = "Select Filemant Maker or Filament Extruder firmware";
+            openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
+            break;
+          case USBDeviceList.MachineType.StBootloader:
+          case USBDeviceList.MachineType.AiridDryer:
+            openFileDialog1.Title = "Select Airid Dryer firmware";
+            openFileDialog1.Filter = "Binary files (*.DfuSe)|*.DfuSe";
+            break;
+          case USBDeviceList.MachineType.None:
+          default:
+            // TODO: Error unsupported model.
+            break;
+        }
+      }
+      catch( ArgumentOutOfRangeException ) {
+        Console.WriteLine("BtnFlashBrowse_Click(); ArgumentOutOfRangeException: Pressed while no combobox items are available.");
+        return;
       }
 
       DialogResult Result = DialogResult.None;
