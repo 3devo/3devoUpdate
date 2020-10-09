@@ -24,6 +24,7 @@ namespace devoUpdate {
     private AvrCmdLine avrCmdLine;
     private Avrdude avrdude;
     private DfuUtilCmdLine dfuUtilCmdLine;
+    private DfuSe_FileValidation dfuSeFileValidation;
     private DfuUtil dfuUtil;
     private bool drag = false;
     private bool deviceSelected = false;
@@ -82,6 +83,8 @@ namespace devoUpdate {
       dfuUtilCmdLine = new DfuUtilCmdLine(this);
       dfuUtil = new DfuUtil();
       dfuUtil.Init();
+
+      dfuSeFileValidation = new DfuSe_FileValidation(this);
 
       dfuUtil.OnProcessStart += Application_OnProcessStart;
       dfuUtil.OnProcessEnd += Application_OnProcessEnd;
@@ -304,6 +307,25 @@ namespace devoUpdate {
           break;
         case USBDeviceList.MachineType.StBootloader: // Fall through
         case USBDeviceList.MachineType.AiridDryer:
+          USBDeviceList usbDevice;
+          try {
+            // This assumes that the selected combobox index doesn't change (at least not before the upload process).
+            usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
+          }
+          catch( ArgumentOutOfRangeException ) {
+            throw new ArgumentOutOfRangeException("ComboboxDropdown_Handler(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
+          }
+
+          // TODO: Place the Target information somewhere else and make it less hardcoded.
+          try {
+            dfuSeFileValidation.FirmwareFileValidation(usbDevice, dfuUtilCmdLine.alternateInterfaceNr, dfuUtilCmdLine.dfuseAddress, bootloaderDevice);
+          }
+          catch(Exception ex) {
+            MsgBox.error(ex.Message);
+            EnableInterface(false /*upload button still disabled*/);
+            return;
+          }
+
           dfuUtilCmdLine.Generate();
           dfuUtil.Launch(dfuUtilCmdLine.command, DfuUtil.CommandType.FILE_UPLOAD);
           break;
