@@ -454,7 +454,7 @@ namespace devoUpdate {
         ComboboxDropdown_Handler();
     }
 
-    // https://stackoverflow.com/questions/16966264/what-event-handler-to-use-for-combobox-item-selected-selected-item-not-necessar //Todo
+    // https://stackoverflow.com/questions/16966264/what-event-handler-to-use-for-combobox-item-selected-selected-item-not-necessar
     private void CmbPort_SelectedIndexChanged( object sender, EventArgs e ) {
         ComboboxDropdown_Handler();
     }
