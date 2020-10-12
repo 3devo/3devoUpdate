@@ -331,7 +331,7 @@ namespace devoUpdate {
           break;
         case USBDeviceList.MachineType.None:
         default:
-          // TODO: Error no compatible upload method found.
+          throw new Exception("StartUploadProcess(); No uploadable device selected.");
           break;
       }
     }
@@ -371,7 +371,7 @@ namespace devoUpdate {
             break;
           case USBDeviceList.MachineType.None:
           default:
-            // TODO: Error unsupported model.
+            throw new Exception("BtnFlashBrowse_Click(); This model is not yet supported.");
             break;
         }
       }
