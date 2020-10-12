@@ -313,7 +313,7 @@ namespace devoUpdate {
             usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
           }
           catch( ArgumentOutOfRangeException ) {
-            throw new ArgumentOutOfRangeException("ComboboxDropdown_Handler(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
+            throw new ArgumentOutOfRangeException("StartUploadProcess(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
           }
 
           // TODO: Place the Target information somewhere else and make it less hardcoded.
