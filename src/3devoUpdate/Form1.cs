@@ -300,39 +300,34 @@ namespace devoUpdate {
     }
 
     private void StartUploadProcess() {
-      switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
-        case USBDeviceList.MachineType.FilamentMaker:
-          avrCmdLine.generate();
-          avrdude.Launch(avrCmdLine.cmdBox, Avrdude.CommandType.FILE_UPLOAD);
-          break;
-        case USBDeviceList.MachineType.StBootloader: // Fall through
-        case USBDeviceList.MachineType.AiridDryer:
-          USBDeviceList usbDevice;
-          try {
+      try {
+        switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
+          case USBDeviceList.MachineType.FilamentMaker:
+            avrCmdLine.generate();
+            avrdude.Launch(avrCmdLine.cmdBox, Avrdude.CommandType.FILE_UPLOAD);
+            break;
+          case USBDeviceList.MachineType.StBootloader: // Fall through
+          case USBDeviceList.MachineType.AiridDryer:
+            USBDeviceList usbDevice;
             // This assumes that the selected combobox index doesn't change (at least not before the upload process).
             usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
-          }
-          catch( ArgumentOutOfRangeException ) {
-            throw new ArgumentOutOfRangeException("StartUploadProcess(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
-          }
 
-          // TODO: Place the Target information somewhere else and make it less hardcoded.
-          try {
+            // TODO: Place the Target information somewhere else and make it less hardcoded.
             dfuSeFileValidation.FirmwareFileValidation(usbDevice, dfuUtilCmdLine.alternateInterfaceNr, dfuUtilCmdLine.dfuseAddress, bootloaderDevice);
-          }
-          catch(Exception ex) {
-            MsgBox.error(ex.Message);
-            EnableInterface(false /*upload button still disabled*/);
-            return;
-          }
 
-          dfuUtilCmdLine.Generate();
-          dfuUtil.Launch(dfuUtilCmdLine.command, DfuUtil.CommandType.FILE_UPLOAD);
-          break;
-        case USBDeviceList.MachineType.None:
-        default:
-          throw new Exception("StartUploadProcess(); No uploadable device selected.");
-          break;
+            dfuUtilCmdLine.Generate();
+            dfuUtil.Launch(dfuUtilCmdLine.command, DfuUtil.CommandType.FILE_UPLOAD);
+            break;
+          case USBDeviceList.MachineType.None:
+          default:
+            throw new Exception("StartUploadProcess(); No uploadable device selected.");
+            break;
+        }
+      }
+      catch( Exception ex ) {
+        Util.consoleWrite(ex.Message);
+        EnableInterface(false /*upload button still disabled*/);
+        return;
       }
     }
     #endregion
