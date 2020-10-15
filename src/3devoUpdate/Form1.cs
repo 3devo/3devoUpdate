@@ -75,14 +75,28 @@ namespace devoUpdate {
 
       avrCmdLine = new AvrCmdLine(this);
       avrdude = new Avrdude();
-      avrdude.Init();
+      try {
+        avrdude.Init();
+      }
+      catch(Exception ex) {
+        // Close the application when Avrdude is not found.
+        MsgBox.error(ex.Message);
+        this.Close();
+      }
 
       avrdude.OnProcessStart += Application_OnProcessStart;
       avrdude.OnProcessEnd += Application_OnProcessEnd;
 
       dfuUtilCmdLine = new DfuUtilCmdLine(this);
       dfuUtil = new DfuUtil();
-      dfuUtil.Init();
+      try {
+        dfuUtil.Init();
+      }
+      catch( Exception ex ) {
+        // Close the application when dfu-util is not found.
+        MsgBox.error(ex.Message);
+        this.Close();
+      }
 
       dfuSeFileValidation = new DfuSe_FileValidation(this);
 

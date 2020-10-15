@@ -270,8 +270,7 @@ namespace avrdudess {
 
       // Config file not found
       if( String.IsNullOrEmpty(conf_loc) || !File.Exists(conf_loc) ) {
-        MsgBox.error(FILE_AVRDUDECONF + " is missing!");
-        throw new System.IO.FileNotFoundException("File is missing", FILE_AVRDUDECONF);
+        throw new System.IO.FileNotFoundException(FILE_AVRDUDECONF + " is not found in the application folder.");
         return;
       }
 

@@ -221,8 +221,8 @@ namespace devoUpdate {
 
       binary = SearchForBinary(binaryName, directory);
       if( binary == null ) {
-        MsgBox.error(binaryName + " is missing!");
-        throw new System.IO.FileNotFoundException("File does not exist: ", binaryName);
+        throw new System.IO.FileNotFoundException(binaryName + ".exe is not found in the application folder.");
+        return false;
       }
 
       return true;
