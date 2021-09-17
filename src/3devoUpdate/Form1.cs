@@ -210,7 +210,8 @@ namespace devoUpdate {
       USBDeviceList.GetSerialDevices(DeviceInfoList);
 
       // Get all the other devices in the list (such as Airid Dryer)
-      USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_3DEVO, USBDeviceList.HARDWARE_PRODUCT_ID_GD);
+      foreach(UInt16 element in Enum.GetValues( typeof( USBDeviceList.HARDWARE_PRODUCT_ID)))
+        USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_3DEVO, element);
 
       // Also add the devices which don't have a product name yet (ST generic)
       USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_ST_GENERIC, USBDeviceList.HARDWARE_PRODUCT_ID_ST_GENERIC);
@@ -220,14 +221,14 @@ namespace devoUpdate {
       string NewHardwareField = "";
       foreach( USBDeviceList Device in DeviceInfoList ) {
         switch( Device.MachineName ) {
-          case USBDeviceList.MachineType.FilamentMaker:
+          case USBDeviceList.MachineType.AtmelDevice:
             NewHardwareField = (DeviceCount + 1).ToString() + ". " + Device.Name; // Hardware friendly name
             break;
           case USBDeviceList.MachineType.StBootloader:
             NewHardwareField = (DeviceCount + 1).ToString() + ". " + "Generic ST device" + $" ({Device.SerialNumber:X})";
             break;
-          case USBDeviceList.MachineType.AiridDryer:
-            NewHardwareField = (DeviceCount + 1).ToString() + ". " + "Airid Dryer" + $" ({Device.SerialNumber:X})";
+          case USBDeviceList.MachineType.StDevice:
+            NewHardwareField = (DeviceCount + 1).ToString() + ". " + Device.Name + $" ({Device.SerialNumber:X})";
             break;
           case USBDeviceList.MachineType.None: // fall-through
           default:
@@ -316,12 +317,12 @@ namespace devoUpdate {
     private void StartUploadProcess() {
       try {
         switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
-          case USBDeviceList.MachineType.FilamentMaker:
+          case USBDeviceList.MachineType.AtmelDevice:
             avrCmdLine.generate();
             avrdude.Launch(avrCmdLine.cmdBox, Avrdude.CommandType.FILE_UPLOAD);
             break;
           case USBDeviceList.MachineType.StBootloader: // Fall through
-          case USBDeviceList.MachineType.AiridDryer:
+          case USBDeviceList.MachineType.StDevice:
             USBDeviceList usbDevice;
             // This assumes that the selected combobox index doesn't change (at least not before the upload process).
             usbDevice = DeviceInfoList.ElementAt(cmbPort.SelectedIndex);
@@ -369,12 +370,12 @@ namespace devoUpdate {
       try {
         //openFileDialog1.Filter += "|All files (*.*)|*.*"; // Probably not a necessary option.
         switch( DeviceInfoList.ElementAt(cmbPort.SelectedIndex).MachineName ) {
-          case USBDeviceList.MachineType.FilamentMaker:
+          case USBDeviceList.MachineType.AtmelDevice:
             openFileDialog1.Title = "Select Filemant Maker or Filament Extruder firmware";
             openFileDialog1.Filter = "Hex files (*.hex)|*.hex";
             break;
           case USBDeviceList.MachineType.StBootloader:
-          case USBDeviceList.MachineType.AiridDryer:
+          case USBDeviceList.MachineType.StDevice:
             openFileDialog1.Title = "Select Airid Dryer firmware";
             openFileDialog1.Filter = "Binary files (*.DfuSe)|*.DfuSe";
             break;
@@ -496,14 +497,14 @@ namespace devoUpdate {
         }
 
         switch( usbDevice.MachineName ) {
-          case USBDeviceList.MachineType.FilamentMaker:
+          case USBDeviceList.MachineType.AtmelDevice:
             avrCmdLine.LoadFilamentMakerDefaults();
 
             avrCmdLine.port = usbDevice.DeviceId; // COM number
             deviceSelected = true;
             break;
           case USBDeviceList.MachineType.StBootloader:
-            dfuUtilCmdLine.LoadAiridDryerDefaults();
+            dfuUtilCmdLine.LoadStm32f4Defaults();
 
             dfuUtilCmdLine.vid = usbDevice.VendorId;
             dfuUtilCmdLine.pid = usbDevice.ProductId;
@@ -511,8 +512,8 @@ namespace devoUpdate {
             bootloaderDevice = true;
             deviceSelected = true;
             break;
-          case USBDeviceList.MachineType.AiridDryer:
-            dfuUtilCmdLine.LoadAiridDryerDefaults();
+          case USBDeviceList.MachineType.StDevice:
+            dfuUtilCmdLine.LoadStm32f4Defaults();
 
             dfuUtilCmdLine.vid = usbDevice.VendorId;
             dfuUtilCmdLine.pid = usbDevice.ProductId;

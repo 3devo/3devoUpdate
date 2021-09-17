@@ -19,7 +19,7 @@ namespace devoUpdate {
     public uint verbosity;
     public string command;
 
-    public void LoadAiridDryerDefaults() {
+    public void LoadStm32f4Defaults() {
       alternateInterfaceNr = 0;
       dfuseAddress = 0x08000000;
       dfuseCommandOptions = DfuUtil.DfuSeCommands.LEAVE;

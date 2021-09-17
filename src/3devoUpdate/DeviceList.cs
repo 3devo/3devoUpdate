@@ -12,11 +12,24 @@ namespace devoUpdate {
     public static Guid GUID_USB_CLASS_BUS_DEVICES = new Guid("36fc9e60-c465-11cf-8056-444553540000");
     public static Guid GUID_USB_CLASS_USB_DEVICE = new Guid("88bae032-5a81-49f0-bc3d-a4ff138216d6");
     public const UInt16 HARDWARE_VENDOR_ID_3DEVO = 0x16D0;
-    public const UInt16 HARDWARE_PRODUCT_ID_FE = 0x0C5B;
-    public const UInt16 HARDWARE_PRODUCT_ID_GD = 0x0F44;
+
+    public enum HARDWARE_PRODUCT_ID : UInt16 {
+      NONE = 0x0000,
+      FM14 = 0x0C5B,
+      GD17 = 0x0F44,
+    };
+
+    public static String GetString(HARDWARE_PRODUCT_ID device) {
+      return device switch
+      {
+        HARDWARE_PRODUCT_ID.FM14 => "Filament Maker",
+        HARDWARE_PRODUCT_ID.GD17 => "Airid Dryer",
+        _ => "Unknown device",
+      };
+    }
+
     public const UInt16 HARDWARE_VENDOR_ID_ST_GENERIC = 0x0483;
     public const UInt16 HARDWARE_PRODUCT_ID_ST_GENERIC = 0xDF11;
-    public const string PORT_HARDWARE_ID_FE = "USB\\VID_16D0&PID_0C5B";
 
     public USBDeviceList( string _DeviceId, string _PnpDeviceId, string _Description ) {
       this.ClassGuid = "";
@@ -42,9 +55,9 @@ namespace devoUpdate {
 
     public enum MachineType : ushort {
       None = 0,
+      AtmelDevice,
       StBootloader,
-      FilamentMaker,
-      AiridDryer,
+      StDevice,
       EndOfList,
     }
 
@@ -67,7 +80,7 @@ namespace devoUpdate {
           string[] hardwareIds = (string[])device["HardWareID"];
 
           if( (hardwareIds != null) && (hardwareIds.Length > 0) ) {
-            string FilterProduct = $"USB\\VID_{HARDWARE_VENDOR_ID_3DEVO:X4}&PID_{HARDWARE_PRODUCT_ID_FE:X4}";
+            string FilterProduct = $"USB\\VID_{HARDWARE_VENDOR_ID_3DEVO:X4}&PID_{(UInt16)HARDWARE_PRODUCT_ID.FM14:X4}";
 
             for( UInt16 i = 0; i < hardwareIds.Length; i++ ) {
               if( hardwareIds[i].Equals(FilterProduct) ) {
@@ -78,7 +91,7 @@ namespace devoUpdate {
                   queryObj["Description"].ToString()));
                 devicelist[devicelist.Count - 1].ClassGuid = (string)device.GetPropertyValue("ClassGuid");
                 devicelist[devicelist.Count - 1].Name = queryObj["Name"].ToString();
-                devicelist[devicelist.Count - 1].MachineName = USBDeviceList.MachineType.FilamentMaker;
+                devicelist[devicelist.Count - 1].MachineName = USBDeviceList.MachineType.AtmelDevice;
               }
             }
           }
@@ -130,14 +143,29 @@ namespace devoUpdate {
                   if( GUID_USB_CLASS_USB_DEVICE != Guid.Empty && ClassGuid == GUID_USB_CLASS_USB_DEVICE ) {
                     Element.MachineName = USBDeviceList.MachineType.StBootloader; // Uses a generic USB device ClassGUID
                   } else if( GUID_USB_CLASS_BUS_DEVICES != Guid.Empty && ClassGuid == GUID_USB_CLASS_BUS_DEVICES ) {
-                    Element.MachineName = USBDeviceList.MachineType.AiridDryer; // Makes use of WinUsb driver ClassGuid
+                    Element.MachineName = USBDeviceList.MachineType.StDevice; // Makes use of WinUsb driver ClassGuid
                   } else {
                     continue;
                   }
 
-                  Element.Name = Entity["Name"].ToString(); // device name
                   Element.VendorId = VendorID; // Vendor ID
                   Element.ProductId = ProductID; // Product Number
+
+                  // Try to get the name from the USB product ID.
+                  String HardwareName = Enum.GetName(typeof(HARDWARE_PRODUCT_ID), Element.ProductId);
+                  if (HardwareName == null)
+                  {
+                    Element.Name = GetString(HARDWARE_PRODUCT_ID.NONE); // Device name
+                  } else {
+                    HARDWARE_PRODUCT_ID ID;
+                    // Try to get the hardware ID by string.
+                    if (Enum.TryParse(HardwareName, out ID))
+                      Element.Name = GetString(ID);
+                    else {
+                      Element.Name = GetString(HARDWARE_PRODUCT_ID.NONE);
+                    }
+                  }
+
                   Element.ClassGuid = ClassGuid.ToString(); // Device installation class GUID
                   Element.SerialNumber = SerialNum;
                   
