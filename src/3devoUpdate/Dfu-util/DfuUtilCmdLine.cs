@@ -56,11 +56,11 @@ namespace devoUpdate {
       // Debug info
       if( Constants.DEBUG_STATUS == true ) {
         System.Diagnostics.Debug.WriteLine("------------------------------------");
-        System.Diagnostics.Debug.WriteLine("------------------------------------\n");
-        System.Diagnostics.Debug.WriteLine("cmdLine generated:\n");
+        System.Diagnostics.Debug.WriteLine("------------------------------------\r\n");
+        System.Diagnostics.Debug.WriteLine("cmdLine generated:\r\n");
         System.Diagnostics.Debug.WriteLine(command);
-        System.Diagnostics.Debug.WriteLine("\n------------------------------------");
-        System.Diagnostics.Debug.WriteLine("------------------------------------\n");
+        System.Diagnostics.Debug.WriteLine("\r\n------------------------------------");
+        System.Diagnostics.Debug.WriteLine("------------------------------------\r\n");
       }
     }
 

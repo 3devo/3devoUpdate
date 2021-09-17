@@ -152,18 +152,18 @@ namespace avrdudess {
                   || outputInfo.Contains("can't open device")
               ) {
             Util.consoleClear();
-            Util.consoleWrite("Connection problem...\n");
-            Util.consoleWrite("\n");
-            Util.consoleWrite("Possible problems:\n");
-            Util.consoleWrite("  - Usb cable is disconnected.\n");
-            Util.consoleWrite("  - COM port is already taken (possibly another program)\n");
-            Util.consoleWrite("  - Not properly working usb cable.\n");
-            Util.consoleWrite("\n");
-            Util.consoleWrite("Before contacting service:\n");
-            Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\n");
-            Util.consoleWrite("  - Try to upload again.\n");
-            Util.consoleWrite("  - If this keeps on failing, contact service for support.\n");
-            Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\n\n");
+            Util.consoleWrite("Connection problem...\r\n");
+            Util.consoleWrite("\r\n");
+            Util.consoleWrite("Possible problems:\r\n");
+            Util.consoleWrite("  - Usb cable is disconnected.\r\n");
+            Util.consoleWrite("  - COM port is already taken (possibly another program)\r\n");
+            Util.consoleWrite("  - Not properly working usb cable.\r\n");
+            Util.consoleWrite("\r\n");
+            Util.consoleWrite("Before contacting service:\r\n");
+            Util.consoleWrite("  - Disconnect and reconnect the filament extruder.\r\n");
+            Util.consoleWrite("  - Try to upload again.\r\n");
+            Util.consoleWrite("  - If this keeps on failing, contact service for support.\r\n");
+            Util.consoleWrite("  - You can click on the 3devo logo to go directly to the contact page of our website.\r\n\r\n");
             upload_status = 0;
           }
 
@@ -189,8 +189,8 @@ namespace avrdudess {
 
             // Debug info
             if( Constants.DEBUG_STATUS == true ) {
-              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
-              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n");
+              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n");
+              System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n\r\n");
             }
           }
           break;
@@ -404,8 +404,8 @@ namespace avrdudess {
         //Util.consoleWrite("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ " + Environment.NewLine);
         // Debug info
         if( Constants.DEBUG_STATUS == true ) {
-          System.Diagnostics.Debug.Write("\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
-          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
+          System.Diagnostics.Debug.Write("\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n");
+          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n");
         }
 
       }

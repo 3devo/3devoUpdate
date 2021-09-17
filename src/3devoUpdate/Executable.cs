@@ -63,8 +63,8 @@ namespace devoUpdate {
           stdoutThread.Abort();
       }
       catch( Exception ex ) {
-        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stdout thread.\n" +
-            "Exception Message:\n" + ex.Message + "\nStack Trace:\n" + ex.StackTrace);
+        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stdout thread.\r\n" +
+            "Exception Message:\r\n" + ex.Message + "\r\nStack Trace:\r\n" + ex.StackTrace);
       }
 
       try {
@@ -72,8 +72,8 @@ namespace devoUpdate {
           stderrThread.Abort();
       }
       catch( Exception ex ) {
-        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stderr thread.\n" +
-            "Exception Message:\n" + ex.Message + "\nStack Trace:\n" + ex.StackTrace);
+        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stderr thread.\r\n" +
+            "Exception Message:\r\n" + ex.Message + "\r\nStack Trace:\r\n" + ex.StackTrace);
       }
       stdoutThread = null;
       stderrThread = null;
@@ -92,7 +92,7 @@ namespace devoUpdate {
       outputLog = "";
 
       if( binary == null ) 
-        throw new Exception("Launch(): No executable set, forgot to call SetExecuteable()?");
+        throw new Exception("Launch(): No executable set, forgot to call SetExecuteable()?\r\n");
 
       processStartInfo.FileName = binary;
       processStartInfo.Arguments = args;
@@ -102,7 +102,7 @@ namespace devoUpdate {
         execProcess.Start();
       }
       catch( Exception ex ) {
-        MsgBox.error("Unable to start process for console output", ex);
+        MsgBox.error("Unable to start process for console output\r\n", ex);
         return false;
       }
 
@@ -166,7 +166,7 @@ namespace devoUpdate {
         }
       }
       catch( Exception e ) {
-        Console.WriteLine("ThreadConsoleUpdate(); Exception caught:" + e.Message + "\nStack Trace:" + e.StackTrace);
+        Console.WriteLine("ThreadConsoleUpdate(); Exception caught:" + e.Message + "\r\nStack Trace:" + e.StackTrace);
       }
     }
 
@@ -202,7 +202,7 @@ namespace devoUpdate {
         CheckForValidProcess("Unable to start executable process.", true /*CheckForHasExited*/);
         execProcess.WaitForExit();
       } catch(Exception e) {
-        Console.WriteLine("WaitForExit(); Process Exception caught: " + e.Message + "\nStack Trace:" + e.StackTrace);
+        Console.WriteLine("WaitForExit(); Process Exception caught: " + e.Message + "\r\nStack Trace:" + e.StackTrace);
       }
 
       // There might still be data in a buffer somewhere that needs to be read by the
@@ -211,7 +211,7 @@ namespace devoUpdate {
         stderrThread.Join();
         stdoutThread.Join();
       } catch (Exception e) {
-        Console.WriteLine("WaitForExit(); Thread Exception caught: " + e.Message + "\nStack Trace:" + e.StackTrace);
+        Console.WriteLine("WaitForExit(); Thread Exception caught: " + e.Message + "\r\nStack Trace:" + e.StackTrace);
       }
     }
 

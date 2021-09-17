@@ -16,10 +16,10 @@ using System.Linq;
 namespace devoUpdate {
   public partial class Form1 : Form {
     public bool downloadIsReady = false;
-    private const string PORT_NOT_SELECTED = "No COM-port selected.\n";
-    private const string FILE_NOT_SELECTED = "No file selected.\n";
-    private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\n";
-    private const string READY_FOR_UPLOADING = "Ready for uploading!\n";
+    private const string PORT_NOT_SELECTED = "No COM-port selected.\r\n";
+    private const string FILE_NOT_SELECTED = "No file selected.\r\n";
+    private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\r\n";
+    private const string READY_FOR_UPLOADING = "Ready for uploading!\r\n";
     private ToolTip ToolTips;
     private AvrCmdLine avrCmdLine;
     private Avrdude avrdude;
@@ -143,7 +143,7 @@ namespace devoUpdate {
       }
 
       if( Constants.DEBUG_STATUS == true ) {
-        System.Diagnostics.Debug.WriteLine("Ready: done initializing\n");
+        System.Diagnostics.Debug.WriteLine("Ready: done initializing\r\n");
       }
     }
 
@@ -299,9 +299,9 @@ namespace devoUpdate {
 
       // User warning when the machine is detected in bootloader mode.
       if (bootloaderDevice == true) {
-        txtStatusInfo.AppendText("\r\nGeneric ST device selected;\n");
-        txtStatusInfo.AppendText("Carefully select the correct binary file for your machine, since we cannot determine which 3devo device is connected!\n");
-        txtStatusInfo.AppendText("Uploading the wrong firmware may cause hardware damage or the machine might stop responding.\n");
+        txtStatusInfo.AppendText("\r\nGeneric ST device selected;\r\n");
+        txtStatusInfo.AppendText("Carefully select the correct binary file for your machine, since we cannot determine which 3devo device is connected!\r\n");
+        txtStatusInfo.AppendText("Uploading the wrong firmware may cause hardware damage or the machine might stop responding.\r\n");
         txtStatusInfo.AppendText("Only use this when recovering from a failed firmware update using the BOOT pin.\r\n");
       }
 

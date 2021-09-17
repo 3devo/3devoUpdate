@@ -111,7 +111,7 @@ namespace devoUpdate {
         int pos = log.IndexOf(EXECUTABLE_NAME_DFU_UTIL);
         if( pos > -1 ) {
           log = log.Substring(pos);
-          Version = log.Substring(0, log.IndexOf('\n'));
+          Version = log.Substring(0, log.IndexOf("\r\n"));
         }
       }
 
@@ -122,8 +122,8 @@ namespace devoUpdate {
       if( outputTo == OutputTo.Console ) {
         // Debug info
         if( Constants.DEBUG_STATUS == true ) {
-          System.Diagnostics.Debug.Write("\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
-          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n");
+          System.Diagnostics.Debug.Write("\r\n\r\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n");
+          System.Diagnostics.Debug.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \r\n");
         }
       }
 

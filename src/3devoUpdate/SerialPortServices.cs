@@ -30,7 +30,7 @@ namespace devoUpdate {
           System.Diagnostics.Debug.Write("\t");
           System.Diagnostics.Debug.Write(port);
         }
-        System.Diagnostics.Debug.Write("\n\n");
+        System.Diagnostics.Debug.Write("\r\n\r\n");
       }
     }
 
@@ -174,7 +174,7 @@ namespace devoUpdate {
               System.Diagnostics.Debug.Write("\t");
               System.Diagnostics.Debug.Write(port);
             }
-            System.Diagnostics.Debug.Write("\n\n");
+            System.Diagnostics.Debug.Write("\r\n\r\n");
           }
         }
 
