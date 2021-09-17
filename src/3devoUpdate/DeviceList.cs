@@ -17,6 +17,7 @@ namespace devoUpdate {
       NONE = 0x0000,
       FM14 = 0x0C5B,
       GD17 = 0x0F44,
+      GP20 = 0x102A,
     };
 
     public static String GetString(HARDWARE_PRODUCT_ID device) {
@@ -24,6 +25,7 @@ namespace devoUpdate {
       {
         HARDWARE_PRODUCT_ID.FM14 => "Filament Maker",
         HARDWARE_PRODUCT_ID.GD17 => "Airid Dryer",
+        HARDWARE_PRODUCT_ID.GP20 => "Granulate Processor",
         _ => "Unknown device",
       };
     }
