@@ -36,13 +36,13 @@ namespace devoUpdate {
       byte bTargets;
 
       if( Constants.DEBUG_STATUS == true )
-        System.Diagnostics.Debug.WriteLine("FirmwareFileValidation(); Starting file validation.");
+        System.Diagnostics.Debug.WriteLine("FirmwareFileValidation(); Starting firmware file validation.");
 
       try {
         sr = new BinaryReader(File.Open(mainForm.flashFile, FileMode.Open));
       }
       catch( Exception e ) {
-        throw new Exception("FirmwareFileValidation(); Could not open Flash file: " + Environment.NewLine + e.Message);
+        throw new Exception("Could not open Flash file: " + Environment.NewLine + e.Message);
       }
 
       try {
@@ -56,7 +56,7 @@ namespace devoUpdate {
         if( bTargets == 1 ) {
           CheckTarget(1, DfuTargetAlternateSetting, DfuElementAdress);
         } else {
-          throw new Exception("FirmwareFileValidation(); Too much or no programmable targets in file. Targets:" + bTargets.ToString());
+          throw new Exception("Too much or no programmable targets in file. Targets:" + bTargets.ToString());
         }
 
         if( Constants.DEBUG_STATUS == true )
@@ -68,7 +68,7 @@ namespace devoUpdate {
           sr.Dispose();
         }
         catch( Exception ex ) {
-          Util.consoleWrite("FirmwareFileValidation(); Could not close and dispose the BinaryReader. Exception:" + ex.Message);
+          Util.consoleWrite("Could not close and dispose the BinaryReader. Exception:" + ex.Message);
         }
       }
     }
@@ -81,7 +81,7 @@ namespace devoUpdate {
       // Check if the file contains the mandatory minimum amount of data following the spec.
       const int minimumFileSize = DFUSE_PREFIX_SIZE + DFUSE_TARGET_PREFIX_SIZE + DFUSE_IMAGE_ELEMENT_SIZE + DFUSE_SUFFIX_bLength;
       if( sr.BaseStream.Length < minimumFileSize ) {
-        throw new Exception("CheckPrefix(); File size too small, this DfuSe file might not be correct.");
+        throw new Exception("File size too small, this DfuSe file might not be correct.");
       }
 
       try {
@@ -90,7 +90,7 @@ namespace devoUpdate {
 
         // Check if the DFU format version is supported.
         if( buffer[5] != DFUSE_PREFIX_bVersion ) {
-          throw new Exception("CheckPrefix(); File format is not the same, this DfuSe file might not be supported.");
+          throw new Exception("File format is not the same, this DfuSe file might not be supported.");
         }
 
         // Check the file Signature in the file.
@@ -101,17 +101,17 @@ namespace devoUpdate {
           || DFUSE_PREFIX_szSignature[3] != buffer[3]
           || DFUSE_PREFIX_szSignature[4] != buffer[4] )
         {
-          throw new Exception("CheckPrefix(); File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
+          throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
         }
 
         dfuFileSize = (uint)(buffer[9] << 24 | buffer[8] << 16 | buffer[7] << 8 | buffer[6]);
         targets = buffer[10];
       }
       catch( ArgumentOutOfRangeException ex ) {
-        throw new Exception("CheckPrefix(); Could not read the prefix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
+        throw new Exception("Could not read the prefix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
       }
       catch( Exception ex ) {
-        throw new Exception("CheckPrefix(); Exception: "+ Environment.NewLine + ex.Message);
+        throw new Exception(ex.Message);
       }
     }
 
@@ -130,7 +130,7 @@ namespace devoUpdate {
         if( DFUSE_SUFFIX_ucSignature[2] != buffer[2]
           || DFUSE_SUFFIX_ucSignature[1] != buffer[1]
           || DFUSE_SUFFIX_ucSignature[0] != buffer[0] ) {
-          throw new Exception("FirmwareFileValidation(); This is not a valid DFU file");
+          throw new Exception("Selected file is not a valid DFU file, suffix signature incorrect.");
         }
 
         suffixSize = buffer[3];
@@ -139,17 +139,17 @@ namespace devoUpdate {
 
         // Check if the suffix size is what we would expect.
         if( suffixSize != DFUSE_SUFFIX_bLength ) {
-          throw new Exception("FirmwareFileValidation(); Suffix size is not as expected. Expected:"
+          throw new Exception("Suffix size is not as expected. Expected:"
             + DFUSE_SUFFIX_bLength.ToString() + "; Received: " + suffixSize.ToString());
         }
 
         // TODO: Check CRC?
       } 
       catch( ArgumentOutOfRangeException ex ) {
-        throw new Exception("FirmwareFileValidation(); Could not read the suffix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
+        throw new Exception("Could not read the suffix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
       }
       catch( Exception ex ) {
-        throw new Exception("FirmwareFileValidation(); Exception: " + Environment.NewLine + ex.Message);
+        throw new Exception(ex.Message);
       }
 
       try {
@@ -162,26 +162,26 @@ namespace devoUpdate {
         // Verifying the rest of the suffix.
         ushort DfuVersion = (ushort)(buffer[7] << 8 | buffer[6]);
         if( DfuVersion != DFUSE_SUPPORTED_DFU_VERSION ) {
-          throw new Exception("FirmwareFileValidation(); This application does not support this DFU file. Supported DFU version=" + DFUSE_SUPPORTED_DFU_VERSION + "; From file=" + DfuVersion);
+          throw new Exception("This application does not support this DFU file. Supported DFU version=" + DFUSE_SUPPORTED_DFU_VERSION + "; From file=" + DfuVersion);
         }
 
         // Firmware version bytes 0 and 1 are ignored, since those are not used right now (are zero).
 
         ushort vendorId = (ushort)(buffer[5] << 8 | buffer[4]);
         if( !isBootloaderDevice && vendorId != VID ) {
-          throw new Exception("FirmwareFileValidation(); The machines' vendor ID does not match the file vendor ID. Supported=" + VID + "; From file=" + vendorId);
+          throw new Exception("The machines's vendor ID does not match the file vendor ID. From COM-port=" + Convert.ToString(VID, 16).PadLeft(4, '0') + "; From file=" + Convert.ToString(vendorId, 16).PadLeft(4, '0'));
         }
 
         ushort productId = (ushort)(buffer[3] << 8 | buffer[2]);
         if ( !isBootloaderDevice && productId != PID) {
-          throw new Exception("FirmwareFileValidation(); The machines' product ID does not match the file product ID. Supported=" + PID + "; From file=" + productId);
+          throw new Exception("The machines's product ID does not match the file product ID. From COM-port=" + Convert.ToString(PID, 16).PadLeft(4, '0') + "; From file=" + Convert.ToString(productId, 16).PadLeft(4, '0'));
         }
       }
       catch( ArgumentOutOfRangeException ex ) {
-        throw new Exception("FirmwareFileValidation(); Could not verify the file suffix, argument out of range. Exception: " + ex.Message);
+        throw new Exception("Could not verify the file suffix, argument out of range. Exception: " + ex.Message);
       }
       catch( Exception ex ) {
-        throw new Exception("FirmwareFileValidation(); Exception: " + ex.Message);
+        throw new Exception(ex.Message);
       }
     }
 
@@ -204,12 +204,12 @@ namespace devoUpdate {
           || DFUSE_TARGET_PREFIX_szSignature[4] != buffer[4]
           || DFUSE_TARGET_PREFIX_szSignature[5] != buffer[5] ) 
         {
-          throw new Exception("CheckTargets(); File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
+          throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
         }
 
         // Check if the alternate setting is zero.
         if( buffer[6] != DfuTargetAlternateSetting) {
-          throw new Exception("CheckTargets(); This file Alternate Setting is not supported at the moment, this firmware file might be corrupt or incorrect.");
+          throw new Exception("This file Alternate Setting is not supported at the moment, this firmware file might be corrupt or incorrect.");
         }
 
         // The Target name in the target prefix section is not checked, it's not sure whether this name has any use at all.
@@ -218,9 +218,9 @@ namespace devoUpdate {
 
         uint numberOfImageElements = (uint)(buffer[273] << 24 | buffer[272] << 16 | buffer[271] << 8 | buffer[270]);
         if(numberOfImageElements == 0)
-          throw new Exception("CheckTargets(); Firmware images not found, this firmware file might be corrupt or incorrect.");
+          throw new Exception("Firmware images not found, this firmware file might be corrupt or incorrect.");
         else if( numberOfImageElements > 1)
-          throw new Exception("CheckTargets(); Too many firmware images found which are not supported at the moment.");
+          throw new Exception("Too many firmware images found which are not supported at the moment.");
 
         // First image section element check
         Array.Clear(buffer, 0, buffer.Length);
@@ -229,14 +229,14 @@ namespace devoUpdate {
 
         uint bufferImageElementAdress = (uint)(buffer[3] << 24 | buffer[2] << 16 | buffer[1] << 8 | buffer[0]);
         if( bufferImageElementAdress != DfuElementAdress ) {
-          throw new Exception("CheckTargets(); The firmware flash address is incorrect, this firmware file might be corrupt or incorrect.");
+          throw new Exception("The firmware flash address is incorrect, this firmware file might be corrupt or incorrect.");
         }
       }
       catch(ArgumentOutOfRangeException ex ) {
-        throw new Exception("CheckTargets(); Could not read the suffix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
+        throw new Exception("Could not read the suffix size and signature, argument out of range. Exception: " + Environment.NewLine + ex.Message);
       }
       catch(Exception ex ) {
-        throw new Exception("CheckTargets(); Exception: " + Environment.NewLine + ex.Message);
+        throw new Exception(ex.Message);
       }
     }
 
