@@ -167,27 +167,6 @@ namespace avrdudess {
             upload_status = 0;
           }
 
-          /* To do: more specific problem handling
-          // COM port conection failed
-          if (s.Contains("can't open device"))
-          {
-              Util.consoleWrite("\tIs the filament extruder still connected?\n");
-              Util.consoleWrite("\tYes? Disconnect and reconnect the filament extruder.\n");
-              Util.consoleWrite("\tTry to upload again..\n");
-              Util.consoleWrite("\tIf it keeps on happening, contact service support..\n");
-              upload_status = 0;
-          }
-
-          // COM port conection failed
-          if (s.Contains("programmer is not responding"))
-          {
-              Util.consoleWrite("\tProgrammer is not responding..\n\n");
-              Util.consoleWrite("\tPossible problem is a not properly working usb cable..\n\n");
-              Util.consoleWrite("\tNeed help? Contact service for more support..\n");
-              upload_status = 0;
-          }
-          */
-
           // Writing selected file
           if( upload_status == 0 ) {
             if( outputInfo.Contains("Writing |") ) {
