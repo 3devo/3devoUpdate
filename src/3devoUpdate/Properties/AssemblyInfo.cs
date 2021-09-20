@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("3devo B.V.")]
 [assembly: AssemblyProduct("3devoUpdate")]
-[assembly: AssemblyCopyright("© 2013 by Zak Kemble, © 2016 3devo.com")]
+[assembly: AssemblyCopyright("© 2013 by Zak Kemble (Avrdudess), © 2021 by Tormod (Dfu-util), © 2021 3devo.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
