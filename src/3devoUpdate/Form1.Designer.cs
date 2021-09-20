@@ -120,7 +120,7 @@
       this.btnFlashBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.btnFlashBrowse.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.btnFlashBrowse.Location = new System.Drawing.Point(430, 16);
+      this.btnFlashBrowse.Location = new System.Drawing.Point(430, 17);
       this.btnFlashBrowse.Name = "btnFlashBrowse";
       this.btnFlashBrowse.Size = new System.Drawing.Size(38, 24);
       this.btnFlashBrowse.TabIndex = 7;
