@@ -1,5 +1,12 @@
-Version 1.4
-===========
+Changes since version 1.4
+=========================
+- Add support for Granulate Processer(GP20) uploads using \*.DFUSE files.
+- Reword some texts and improve the layout a bit.
+- Update copyright notice (about screen).
+- Various internal improvements.
+
+Changes since version 1.3
+=========================
 - Add support for Airid Dryer firmware uploads using \*.DFUSE files. This file
   type allows the 3devoUpdate tool to check if firmware matches the selected
   device, to prevent uploading firmware to the wrong device.
