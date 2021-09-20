@@ -335,7 +335,7 @@ namespace devoUpdate {
             break;
           case USBDeviceList.MachineType.None:
           default:
-            throw new Exception("StartUploadProcess(); No uploadable device selected.");
+            throw new Exception("No uploadable device selected.");
             break;
         }
       }
@@ -381,12 +381,12 @@ namespace devoUpdate {
             break;
           case USBDeviceList.MachineType.None:
           default:
-            throw new Exception("BtnFlashBrowse_Click(); This model is not yet supported.");
+            throw new Exception("This model is not yet supported.");
             break;
         }
       }
       catch( ArgumentOutOfRangeException ) {
-        Console.WriteLine("BtnFlashBrowse_Click(); ArgumentOutOfRangeException: Pressed while no combobox items are available.");
+        Console.WriteLine("Pressed while no combobox items are available.");
         return;
       }
 
@@ -493,7 +493,7 @@ namespace devoUpdate {
           }
         }
         catch( ArgumentOutOfRangeException ) {
-          throw new ArgumentOutOfRangeException("ComboboxDropdown_Handler(); combobox index doesn't exist: ", cmbPort.SelectedIndex.ToString());
+          throw new ArgumentOutOfRangeException("Combobox index out of range: ", cmbPort.SelectedIndex.ToString());
         }
 
         switch( usbDevice.MachineName ) {
