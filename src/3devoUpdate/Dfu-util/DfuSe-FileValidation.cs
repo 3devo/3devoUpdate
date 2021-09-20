@@ -94,14 +94,9 @@ namespace devoUpdate {
         }
 
         // Check the file Signature in the file.
-        // TODO: simplify this, couldn't get C# to compare the array's in a good way
-        if( DFUSE_PREFIX_szSignature[0] != buffer[0] 
-          || DFUSE_PREFIX_szSignature[1] != buffer[1]
-          || DFUSE_PREFIX_szSignature[2] != buffer[2]
-          || DFUSE_PREFIX_szSignature[3] != buffer[3]
-          || DFUSE_PREFIX_szSignature[4] != buffer[4] )
-        {
-          throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
+        for (int i = 0; i < DFUSE_PREFIX_szSignature.Length; i++) {
+          if (DFUSE_PREFIX_szSignature[i] != buffer[i])
+            throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
         }
 
         dfuFileSize = (uint)(buffer[9] << 24 | buffer[8] << 16 | buffer[7] << 8 | buffer[6]);
@@ -127,10 +122,9 @@ namespace devoUpdate {
         buffer = sr.ReadBytes(DFUSE_SUFFIX_ucSignature.Length + 1 /*bLength byte*/);
 
         // Check if the file signature is present in the file.
-        if( DFUSE_SUFFIX_ucSignature[2] != buffer[2]
-          || DFUSE_SUFFIX_ucSignature[1] != buffer[1]
-          || DFUSE_SUFFIX_ucSignature[0] != buffer[0] ) {
-          throw new Exception("Selected file is not a valid DFU file, suffix signature incorrect.");
+        for (int i = 0; i < DFUSE_SUFFIX_ucSignature.Length; i++) {
+          if (DFUSE_SUFFIX_ucSignature[i] != buffer[i])
+            throw new Exception("Selected file is not a valid DFU file, suffix signature incorrect.");
         }
 
         suffixSize = buffer[3];
@@ -196,15 +190,10 @@ namespace devoUpdate {
         sr.BaseStream.Position = DFUSE_PREFIX_SIZE;
         buffer = sr.ReadBytes(DFUSE_TARGET_PREFIX_SIZE);
 
-        // Check if the Target Prefix starts with the correct signature
-        if( DFUSE_TARGET_PREFIX_szSignature [0] != buffer[0]
-          || DFUSE_TARGET_PREFIX_szSignature[1] != buffer[1]
-          || DFUSE_TARGET_PREFIX_szSignature[2] != buffer[2]
-          || DFUSE_TARGET_PREFIX_szSignature[3] != buffer[3]
-          || DFUSE_TARGET_PREFIX_szSignature[4] != buffer[4]
-          || DFUSE_TARGET_PREFIX_szSignature[5] != buffer[5] ) 
-        {
-          throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
+        // Check if the Target Prefix starts with the correct signature.
+        for (int i = 0; i < DFUSE_TARGET_PREFIX_szSignature.Length; i++) {
+          if (DFUSE_TARGET_PREFIX_szSignature[i] != buffer[i])
+            throw new Exception("File signature is incorrect, this DfuSe file might be corrupt or incorrect.");
         }
 
         // Check if the alternate setting is zero.
