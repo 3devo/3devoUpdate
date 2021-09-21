@@ -128,9 +128,16 @@ namespace devoUpdate {
             if( matchInterface.Success ) {
               continue; // No need for the interface sub-nodes
             } else {
+              UInt64 SerialNum = 0;
+
               // The match fails if the interface is not available, meaning that this is the "parent" node.
               // When this is the case, the serial number will be available at the end of the string.
-              UInt64 SerialNum = Convert.ToUInt64(Dependent.Substring(25, 12), 16);
+              try {
+                SerialNum = Convert.ToUInt64(Dependent.Substring(25, 12), 16);
+              }
+              catch (Exception ex) {
+                // Could not retrieve the serial number, perhaps this device does not advertise one.
+              }
 
               string PnPEntrySearchQuery = "SELECT * FROM Win32_PnPEntity WHERE DeviceID=" + Dependent;
               ManagementObjectCollection PnPEntityCollection = new ManagementObjectSearcher(PnPEntrySearchQuery).Get();
