@@ -116,10 +116,12 @@ namespace devoUpdate {
           Match match = Regex.Match(Dependent, "VID_[0-9|A-F]{4}&PID_[0-9|A-F]{4}");
           if( match.Success ) {
             UInt16 VendorID = Convert.ToUInt16(match.Value.Substring(4, 4), 16); // Vendor ID
-            if( FilterVid != UInt16.MinValue && FilterVid != VendorID ) continue;
+            if( FilterVid == UInt16.MinValue || FilterVid != VendorID )
+              continue;
 
             UInt16 ProductID = Convert.ToUInt16(match.Value.Substring(13, 4), 16); // Product Number
-            if( FilterPid != UInt16.MinValue && FilterPid != ProductID ) continue;
+            if( FilterPid == UInt16.MinValue || FilterPid != ProductID )
+              continue;
 
             // Check to see if our interface number is available for uploads
             Match matchInterface = Regex.Match(Dependent, "VID_[0-9|A-F]{4}&PID_[0-9|A-F]{4}&MI_[0-9|A-F]");
