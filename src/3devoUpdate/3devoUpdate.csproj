@@ -95,6 +95,7 @@
     <Compile Include="Avrdudess\Avrdude.cs" />
     <Compile Include="BinaryFormatter.cs" />
     <Compile Include="DeviceList.cs" />
+    <Compile Include="DevoHardware.cs" />
     <Compile Include="Dfu-util\Dfu-Util.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Avrdudess\FileFormat.cs" />

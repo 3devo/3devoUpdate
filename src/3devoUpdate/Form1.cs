@@ -207,14 +207,10 @@ namespace devoUpdate {
       Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Clear(); });
 
       // Get all the serial devices which do not make use of DFU programming
-      USBDeviceList.GetSerialDevices(DeviceInfoList);
+      USBDeviceList.GetSerialDevices(DeviceInfoList, DevoHardware.SerialDevices);
 
       // Get all the other devices in the list (such as Airid Dryer)
-      foreach(UInt16 element in Enum.GetValues( typeof( USBDeviceList.HARDWARE_PRODUCT_ID)))
-        USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_3DEVO, element);
-
-      // Also add the devices which don't have a product name yet (ST generic)
-      USBDeviceList.GetDfuDevices(DeviceInfoList, USBDeviceList.HARDWARE_VENDOR_ID_ST_GENERIC, USBDeviceList.HARDWARE_PRODUCT_ID_ST_GENERIC);
+      USBDeviceList.GetDfuDevices(DeviceInfoList, DevoHardware.DfuDevices);
 
       // Add all components to the combobox list
       UInt16 DeviceCount = 0;
