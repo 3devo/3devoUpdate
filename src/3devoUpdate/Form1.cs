@@ -170,13 +170,7 @@ namespace devoUpdate {
       tssStatus.Text = "Upload process busy";
     }
 
-    private const int enumerateTimeout = 2000; // In milliseconds
     private void Application_OnProcessEnd( object sender, EventArgs e ) {
-      // Add a small delay here to give the board time to re-enumerate after the download process
-      // is finished.
-      // If the portChanged handler is raised too soon, the enumeration might still be going and
-      // show devices (such as the Airid mainboard) as ST generic device. This delay postpones 
-      System.Threading.Thread.Sleep(enumerateTimeout);
       if (sender is DfuUtil)
         dfuUtil.AwaitAndAbortProcess();
       else if (sender is Avrdude)
