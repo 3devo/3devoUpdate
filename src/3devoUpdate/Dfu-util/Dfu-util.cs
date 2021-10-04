@@ -92,8 +92,8 @@ namespace devoUpdate {
               upload_status = 2;
           }
 
-          if( outputInfo.Contains("File downloaded successfully") && (upload_status == 2) ) {
-            Util.consoleWrite("| File upload successful!");
+          if( outputInfo.Contains("Download done") && (upload_status == 2) ) {
+            Util.consoleWrite("| File upload was successful!\r\n");
             upload_status = 3;
           }
           break;
