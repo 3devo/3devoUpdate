@@ -71,6 +71,11 @@ namespace devoUpdate {
 
       switch( commandTypeDfu ) {
         case CommandType.FILE_UPLOAD:
+          if (upload_status == 0 && outputInfo.Contains("Cannot open DFU device")) {
+            Util.consoleWrite("Cannot open the device, DFU drivers not installed?\r\n");
+            return;
+          }
+
           // Writing selected file
           if( upload_status == 0 ) {
             if( outputInfo.Contains("Download") && outputInfo.Contains("0%") ) {
