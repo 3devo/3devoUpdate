@@ -16,10 +16,10 @@ using System.Linq;
 namespace devoUpdate {
   public partial class Form1 : Form {
     public bool downloadIsReady = false;
-    private const string PORT_NOT_SELECTED = "No COM-port selected.\r\n";
-    private const string FILE_NOT_SELECTED = "No file selected.\r\n";
-    private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.\r\n";
-    private const string READY_FOR_UPLOADING = "Ready for uploading!\r\n";
+    private const string PORT_NOT_SELECTED = "No COM-port selected.";
+    private const string FILE_NOT_SELECTED = "No file selected.";
+    private const string NO_MACHINE_CONNECTED = "No machine connected or 3devo driver not installed.";
+    private const string READY_FOR_UPLOADING = "Ready for uploading!";
     private ToolTip ToolTips;
     private AvrCmdLine avrCmdLine;
     private Avrdude avrdude;
@@ -271,26 +271,23 @@ namespace devoUpdate {
     }
 
     private void UpdateInterface() {
-      // Clear status info text
-      txtStatusInfo.Clear();
-
       cmbPort.Enabled = true;
 
       // No devices connected/found
       if( cmbPort.Items.Count == 0 ) {
         btnFlashBrowse.Enabled = false;
-        txtStatusInfo.AppendText(NO_MACHINE_CONNECTED);
+        tssStatus.Text = NO_MACHINE_CONNECTED;
       }
       // 1 or more devices connected
       else {
         btnFlashBrowse.Enabled = true;
 
         if( deviceSelected == false ) {
-          txtStatusInfo.AppendText(PORT_NOT_SELECTED);
+          tssStatus.Text = PORT_NOT_SELECTED;
         } else if( flashFile.Length == 0 ) {
-          txtStatusInfo.AppendText(FILE_NOT_SELECTED);
+          tssStatus.Text = FILE_NOT_SELECTED;
         } else {
-          txtStatusInfo.AppendText(READY_FOR_UPLOADING);
+          tssStatus.Text = READY_FOR_UPLOADING;
         }
       }
 
@@ -404,6 +401,9 @@ namespace devoUpdate {
     private void BtnUpload_Click( object sender, EventArgs e ) {
       if( downloadIsReady ) {
         downloadIsReady = false;
+
+        // Clear status info box text.
+        txtStatusInfo.Clear();
 
         // Disable the PortsChanged eventhandler to prevent multiple insertion/removal events of devices.
         // This is caused by the selected download device, which will reset during the upload process and
