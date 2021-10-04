@@ -177,6 +177,10 @@ namespace devoUpdate {
       // If the portChanged handler is raised too soon, the enumeration might still be going and
       // show devices (such as the Airid mainboard) as ST generic device. This delay postpones 
       System.Threading.Thread.Sleep(enumerateTimeout);
+      if (sender is DfuUtil)
+        dfuUtil.AwaitAndAbortProcess();
+      else if (sender is Avrdude)
+        avrdude.AwaitAndAbortProcess();
 
       if( Constants.DEBUG_STATUS )
         Console.WriteLine("Application_OnProcessEnd(); Postponing of Form process during enumeration is finished (delay expired).");

@@ -142,5 +142,9 @@ namespace devoUpdate {
       Launch(args, null, null, outputTo);
     }
 
+    public void AwaitAndAbortProcess() {
+      base.WaitForExit();
+      base.AbortProcesses();
+    }
   }
 }

@@ -468,5 +468,11 @@ namespace avrdudess {
 
       OnDetectedMCU?.Invoke(this, new DetectedMCUEventArgs(null));
     }
+
+    public void AwaitAndAbortProcess()
+    {
+      base.WaitForExit();
+      base.AbortProcesses();
+    }
   }
 }
