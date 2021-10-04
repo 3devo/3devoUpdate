@@ -244,7 +244,7 @@ namespace devoUpdate {
       }
 
       // Pre-select the first item in the list if only one device is selectable. Changing the selected index
-      // when no device is preselected raises the comboboxDropdown_Handler a second second time.
+      // when no device is preselected raises the comboboxDropdown_Handler a second time.
       Util.InvokeIfRequired(this, c => {
         if( this.cmbPort.Items.Count > 0 && this.cmbPort.SelectedIndex == -1 ) {
           this.cmbPort.SelectedIndex = 0;
