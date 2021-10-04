@@ -73,7 +73,7 @@ namespace devoUpdate {
           stdoutThread.Abort();
       }
       catch( Exception ex ) {
-        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stdout thread.\r\n" +
+        Console.WriteLine("Executable.AbortProcesses(); Exception caught on stopping stdout thread.\r\n" +
             "Exception Message:\r\n" + ex.Message + "\r\nStack Trace:\r\n" + ex.StackTrace);
       }
 
@@ -82,7 +82,7 @@ namespace devoUpdate {
           stderrThread.Abort();
       }
       catch( Exception ex ) {
-        Console.WriteLine("ProcessIoManager.StopProcesses(); Exception caught on stopping stderr thread.\r\n" +
+        Console.WriteLine("Executable.AbortProcesses(); Exception caught on stopping stderr thread.\r\n" +
             "Exception Message:\r\n" + ex.Message + "\r\nStack Trace:\r\n" + ex.StackTrace);
       }
       execProcess = null;
