@@ -211,10 +211,14 @@ namespace devoUpdate {
       USBDeviceList.GetDfuDevices(DeviceInfoList, DevoHardware.DfuDevices);
 
       // Add all components to the combobox list
+      bool valid_device = false;
       UInt16 DeviceCount = 0;
       string NewHardwareField = "";
       foreach( USBDeviceList Device in DeviceInfoList ) {
-        switch( Device.MachineName ) {
+        valid_device = true;
+        NewHardwareField = "";
+
+        switch ( Device.MachineName ) {
           case USBDeviceList.MachineType.AtmelDevice:
             NewHardwareField = (DeviceCount + 1).ToString() + ". " + Device.Name; // Hardware friendly name
             break;
@@ -224,17 +228,22 @@ namespace devoUpdate {
           case USBDeviceList.MachineType.StDevice:
             NewHardwareField = (DeviceCount + 1).ToString() + ". " + Device.Name + $" ({Device.SerialNumber:X})";
             break;
-          case USBDeviceList.MachineType.None: // fall-through
+          case USBDeviceList.MachineType.None:
+            NewHardwareField = (DeviceCount + 1).ToString() + ". " + "Unsupported device";
+            break;
           default:
+            valid_device = false;
             Util.InvokeIfRequired(this, c => {
               txtStatusInfo.AppendText($"An unexpected machine found in device list ({Device.MachineName})");
             });
             break;
         }
 
-        Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Add(NewHardwareField); });
+        if (valid_device) {
+          Util.InvokeIfRequired(this, c => { this.cmbPort.Items.Add(NewHardwareField); });
 
-        DeviceCount += 1;
+          DeviceCount += 1;
+        }
       }
 
       // Pre-select the first item in the list if only one device is selectable. Changing the selected index
