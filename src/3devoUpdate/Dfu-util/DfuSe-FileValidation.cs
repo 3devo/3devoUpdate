@@ -39,7 +39,7 @@ namespace devoUpdate {
         System.Diagnostics.Debug.WriteLine("FirmwareFileValidation(); Starting firmware file validation.");
 
       try {
-        sr = new BinaryReader(File.Open(mainForm.flashFile, FileMode.Open));
+        sr = new BinaryReader(File.Open(mainForm.flashFile, FileMode.Open, FileAccess.Read));
       }
       catch( Exception e ) {
         throw new Exception("Could not open Flash file: " + Environment.NewLine + e.Message);
