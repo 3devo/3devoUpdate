@@ -1,17 +1,23 @@
-3Devo Filament extruder firmware update tool
+3devoUpdate - firmware update tool
 ============================================
-This tool can be used to update the firmware of a 3Devo Next 1.0
-Filament Extruder using a Windows computer. For updating using a Linux
-or OSX computer, see the instructions further down.
+This tool can be used to update the firmware of 3devo products using a Windows
+computer. For updating using a Linux or OSX computer, see the instructions further down.
 
 To use this tool, extract all files from the zipfile to a convenient
 location. You should have the following files:
- - 3devo-driver.inf
- - 3devo-signature.cat
+ - Drivers v1.0.1.0
+   + DFU drivers
+     > 3devo-dfu-driver.inf
+     > 3devo-dfu-signature.cat
+   + Serial drivers
+     > 3devo-serial-driver.inf
+     > 3devo-serial-signature.cat
  - 3devoUpdate.exe
  - avrdude.exe
  - avrdude.conf
+ - dfu-util.exe
  - libusb0.dll
+ - libusb-1.0.dll
  - README.txt
 
 
@@ -23,13 +29,17 @@ Starting from Windows 10, this driver is automatically installed and
 this step can be skipped.
 
 To install the driver:
- - right click the '3devo-driver.inf' file
- - click 'Install'
+ - Navigate to the `Drivers vx.x.x.x.` folder, `DFU drivers` (for Airid Dryer) and/or
+   `Serial drivers` folder (for Filament Extruder or Filament Maker)
+ - Right click the '3devo-dfu-driver.inf' and/or `3devo-serial-driver.inf` file
+   depending on your machine.
+ - Right mouse click -> 'Install'.
 
 No confirmation is shown, but if the driver is succesfully
-installed, a popup should appear in the lower right saying "Next 1.0
-filament extruder (COM..) installed" when the filament extruder is next
-plugged into USB.
+installed, a popup should appear in the lower right saying 
+"Filament Maker or Filament Extruder (COM...) installed" when the filament
+Extruder/Maker is next plugged into USB. Airid dryers will show up as
+"Airid Granulate Dryer - Serial (COM...)".
 
 Installing the driver only needs to happen once, so you can skip this
 step when later updating to another firmware version.
@@ -41,12 +51,12 @@ Start the updating tool doubleclicking the '3devoUpdate.exe' (or just
 '3devoUpdate') executable file.
 
 To start the upload:
- - Select the (virtual) serial port corresponding to the filament
-   extruder. This list is automatically filtered, so usually it will
-   contain just one entry.
- - Select the firmware file to upload. This is a .hex file that should
-   be separately supplied.
- - Click upload
+ - Select the (virtual) serial port corresponding to the Filament
+   Maker or Airid Dryer. This list is automatically filtered, so usually it
+   will contain just one entry.
+ - Select the firmware file to upload. This is a .DfuSe or .hex file that
+   should be separately supplied.
+ - Click "Upload"
 
 
 
@@ -82,9 +92,10 @@ find the device name.
 
 Getting avrdude
 ---------------
-The `avrdude` program is used to actually upload the firmware and must
-be installed. Most Linux distributions will offer an `avrdude` package
-that will work (`avrdude` version 6.1 or higher is needed).
+The `avrdude` program is used to actually upload the firmware to
+Filament extruder and Filament Makers and must be installed. Most
+Linux distributions will offer an `avrdude` package that will work
+(`avrdude` version 6.1 or higher is needed).
 
 Alternatively, you can use the `avrdude` version supplied with the
 Arduino software. To use it, extract a zipfile or tarball downloaded
@@ -96,10 +107,9 @@ verbose upload in the preferences and click "upload" to see both the
 path to `avrdude` as well as the `-C` option to use.
 
 
-
 Running avrdude
 ---------------
-The actual upload is done using the avrdude command. In a terminal, run
+The actual hex file upload is done using the avrdude command. In a terminal, run
 a command like:
 
     avrdude -p atmega2560 -b 115200 -carduino -P/dev/ttyACM0 -D -Uflash:w:FeFirmware-v1.0.0.hex:i -v
@@ -107,6 +117,31 @@ a command like:
 Where `/dev/ttyACM0` is replaced with the appropriate serial port,
 `FeFirmware-v1.0.0.hex` with the path to the firmware file to upload. If
 needed, update the `avrdude` part with the path to the avrude binary.
+
+
+Getting dfu-util
+----------------
+The `dfu-util` program is used to upload the firmware to
+Airid dryers and must be installed. Most Linux distributions will offer
+an `dfu-util` package that will work(`dfu-util` version 0.9 or higher is needed).
+
+Note that, in this case Arduino software also supplies `dfu-util`, but this
+version is not usable since the supplied version is v0.1 which is not compatible
+with the 3devoUpdate application.
+
+
+Running dfu-util
+----------------
+The actual DfuSe file upload is done using the dfu-util command. In a terminal, run
+a command like:
+
+    dfu-util -a 0 -s :leave -S "123456789123" -D GdFirmware-v1.0.0.DfuSe
+
+Where "123456789123" is replaced with the appropriate device serial number, 
+`GdFirmware-v1.0.0.DfuSe` with the path to the firmware file to upload.
+The serial number can be found with the '--list' option without other parameters
+in dfu-util. 
+
 
 Software licenses
 =================
@@ -121,7 +156,7 @@ information regarding the copyright and licensing of this software.
 https://github.com/zkemble/AVRDUDESS. It is licensed under the GPLv3.
 The source code and full license terms can be found at
 https://github.com/3devo/3devoUpdate or can be requested from
-service@3devo.eu.
+service@3devo.com.
 
 
 avrdude
@@ -135,10 +170,21 @@ The source code and full license terms can be found at
 http://download.savannah.gnu.org/releases/avrdude/
 
 
+dfu-util
+--------
+A copy of dfu-util.exe is distributed along with this tool. It is a
+verbatim copy taken from the zipfile downloaded from the avrdude project
+at https://sourceforge.net/projects/dfu-util/files/latest/download
+and is licensed under the GPLv2.
+
+The source code and full license terms (file "COPYING") can be found at
+https://sourceforge.net/p/dfu-util/dfu-util/ci/master/tree/
+
+
 libusb
 ------
-A copy of libusb0.dll is distributed along with this tool. It is a
-verbatim copy taken from the zipfile downloaded from the libusb project
+A copy of libusb0.dll and libusb-v1.0.dll is distributed along with this tool.
+It is a verbatim copy taken from the zipfile downloaded from the libusb project
 at http://downloads.sourceforge.net/libusb-win32/libusb-win32-bin-1.2.6.0.zip
 and is licensed under the LGPLv3.
 
